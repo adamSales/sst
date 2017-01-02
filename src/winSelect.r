@@ -42,3 +42,16 @@ dhatAlphaBad <- function(ps,alpha){
     if(class(res)=='try-error') return(NA)
     res
 }
+
+dhatAll <- function(ps, alphas=c(0.05,0.15,0.25)){
+    setNames(
+        c(vapply(alphas, function(alph) dhatAlpha(ps,alph),1),
+          #vapply(alphas, function(alph) dhatAlphaBad(ps,alph),1),
+          dhatM(ps),
+          dhatM2(ps)[2]),
+        c(paste0('\\dhat_{',alphas,'}'),
+          #paste0('\\dhat_{\tilde{',alphas,'}}'),
+          '\\dhat^{0.5,0}_M','\\dhat^{a,b}_M')
+        )
+}
+

@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 
-\usepackage{endfloat}
+%\usepackage{endfloat}
 \usepackage{type1ec}
 \usepackage{subcaption}
 \usepackage{fullpage}
@@ -25,7 +25,12 @@
 \newcommand{\dhat}{\hat{d}}
 \newcommand{\dhatm}{\hat{d}_M}
 \newcommand{\hedged}{H_{0d}^{edge}}
-\newcommand{\htoted}{H_{0d}^{tot}}
+\newcommand{\htotd}{H_{0d}^{tot}}
+\newcommand{\EE}{\mathbb{E}}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
 
 \doublespacing
 
@@ -42,6 +47,17 @@
 \newenvironment{ass}[2][Assumption:]{\begin{trivlist}
 \item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2}.]}{\end{trivlist}}
 
+<<include=FALSE>>=
+library(knitr)
+library(tikzDevice)
+opts_chunk$set(
+echo=FALSE, results='asis',cache=TRUE,warning=FALSE,error=FALSE,dev='tikz',message=FALSE,autodep = TRUE
+    )
+
+options(tikzDefaultEngine = "pdftex")
+
+
+@
 
 <<functions>>=
 
@@ -82,7 +98,7 @@ Say, in specifying a model, a research must choose from a discrete,
 ordered, set of specifications, such as variables to include in a
 linear model, bandwidths in a regression discontinuity design, or
 calipers in a propensity-score matching design.
-Denote the set of possible choices $d=1,2,...,D$.
+Denote the set of possible choices $d=1,2,\dots,D$.
 
 The researcher wishes to choose the best model that satisfies a
 particular testable assumption $\mathcal{A}$.
@@ -94,7 +110,7 @@ instance, the smallest model, or the biggest dataset, that satisfies
 $\mathcal{A}$.
 Finally, assume the researcher has chosen a valid, unbiased test of
 $\mathcal{A}$ and caluculated p-values for each $d$:
-$\bm{p}_D=p_1,...,p_d,...,p_D$.
+$\bm{p}_D=p_1,\dots,p_d,\dots,p_D$.
 The procedure here is to use $\bm{p}_D$ to choose a specification
 $\hat{d}$ that is as large as possible without violating
 $\mathcal{A}$.
@@ -116,7 +132,7 @@ family-wise error rate is maintained.
 That is, the probability of falsely rejecting the null---choosing
 $\dalpha<\dstar$, is bounded by $\alpha$.
 $\dalpha$ is the specification that would result from testing null
-hypotheses backwards: for $d'=D,D-1,...,d,...,1$, test $H_{0d'}:$
+hypotheses backwards: for $d'=D,D-1,\dots,d,\dots,1$, test $H_{0d'}:$
 $\mathcal{A}$ is true for $d\le d'$.
 Then, stop testing at $d'=\dalpha -1$---the first $d'$ for which
 $p_{d'} \ge \alpha$; reject all null hypotheses $H_{0d'}$ for which
@@ -145,15 +161,15 @@ For instance, choosing the bandwidth of a regression discontinuity
 design, or choosing the parameters of a matching design.
 In this scenario, each choice $d$ corresponds to rows in the dataset
 that could be included in the analysis.
-Formally, let $\mathcal{I}=\{1,...,N\}$, indices for $N$ candidate
+Formally, let $\mathcal{I}=\{1,\dots,N\}$, indices for $N$ candidate
 cases to be fit in a model.
-Then let $\mathcal{I}=\mathcal{i}_1\union\mathcal{i}_2\union...\union
-\mathcal{i}_d \union \dots union \mathcal{i}_D$.
+Then let $\mathcal{I}=\mathcal{i}_1\cup\mathcal{i}_2\cup\dots\cup
+\mathcal{i}_d \cup \dots union \mathcal{i}_D$.
 The choice of $\hat{d}$ means fitting the model to the dataset
 including each of these subsets,
-$\mathcal{I}_d=\mathcal{i}_1\union\dots\mathcal{i}_d$.
+$\mathcal{I}_d=\mathcal{i}_1\cup\dots\mathcal{i}_d$.
 Note that the sets denoted with lower-case $\mathcal{i}_d$ are disjoint,
-$\mathcal{i}_d \intersect \mathcal{i}_{d'}=\emptyset$,
+$\mathcal{i}_d \cap \mathcal{i}_{d'}=\emptyset$,
 those denoted with upper-case $\mathcal{I}_d$ are nested---$d>d'$
 implies $\mathcal{I}_{d'}\subset \mathcal{I}_d$, and the full set of
 indices, noted without a subscript, $\mathcal{I}=\mathcal{I}_D$.
@@ -168,7 +184,7 @@ included in a model, with the goal being smallest model that satisfies
 $\mathcal{A}$.
 Then let $\bm{X}$ denote the full set of variables, $\bm{x}_d$ denote
 the set of variables that would be \emph{subtracted} in the $d^{th}$ step
-of the sequence, and $\bm{X}_d=\bm{x}_{d+1} \union \dots \union \bm{x}_D$
+of the sequence, and $\bm{X}_d=\bm{x}_{d+1} \cup \dots \cup \bm{x}_D$
 denote the set of variables that would be included in the analysis,
 were the analyst to choose $d$.
 Note here that bigger values of $d$ correspond to smaller models.
@@ -305,10 +321,10 @@ In the context of change point estimation, \citet{mallik} suggests
 such a heuristic.
 They discuss a random variable $x_t$, whose distribution is a function
 of a continuous covariate $t$.
-For $t<d^*$, $\E x_t=\tau_0$, a constant; for $t>\dstar$, $\E
+For $t<d^*$, $\EE x_t=\tau_0$, a constant; for $t>\dstar$, $\EE
 x_t>\tau_0$.
 They propose an estimate of $d_0$ based on p-values $p_t$
-testing the hypotheses $H_{0t}:\E x_t=\tau_0$.
+testing the hypotheses $H_{0t}:\EE x_t=\tau_0$.
 They note that for $t<\dstar$, the null hypotheses are true, so
 $p_t\sim U(0,1)$, and $\EE p_t =1/2$; when $t>\dstar$, the null hypotheses are false, and
 the p-values converge in probability to zero.
@@ -423,7 +439,7 @@ whereas the total null is
 \mathcal{I}_d
 \end{equation}
 where, as above,
-$\mathcal{I}_d=\mathcal{i}_1\union\dots\mathcal{i}_d$, all data
+$\mathcal{I}_d=\mathcal{i}_1\cup\dots\mathcal{i}_d$, all data
 included in specification $d$.
 
 For instance, in selecting a bandwidth for an RDD, as in
@@ -551,100 +567,142 @@ subsequent GPAs.
 For the sake of simplicty, the discussion will be limited to CFT's
 general approach to regression discontinuity designs; however, many of
 the SST methods can be extended to other RDD analyses.
+In their analysis, CFT  considered a set of seven covariates:
+students' high-school GPA (expressed in percentiles), age at college
+metriculation, number of attempted credits, gender, native language
+(English or other), birth place (North America or other) and
+university campus (the university consisted of three campuses).
+A version of Hotellings $T^2$ test that models
+treatment assginment $Z$, and not $X$, as random \citep{hansenBowers}
+is used to test balance.
+The resulting p-values, Total Testing---testing hypotheses
+(\ref{eq:covBal})---and Edge Testing, testing $H_{0bw}: X\independent Z
+| |R|=bw$, are plotted in Figure \ref{fig:rddpvalues1}.
 
-<<rdd>>=
+\begin{figure}
+<<rdd,fig.width=6,fig.height=4,results='hide'>>=
 source('src/winSelect.r')
 source('src/lso.r')
 
+par(mfrow=c(1,2))
+plot(bws,psT,main='Total Testing',xlab='$bw$',ylab='p-value',ylim=c(0,1))
+wtplus <- windowsT[windowsT>0]
+abline(v=bws[unique(wtplus)],col=seq(length(unique(wtplus))))
+legend('topright',legend=vapply(unique(wtplus),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(wtplus)[wtplus==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(wtplus))),lty=1)
 
+plot(bws,psE,main='Edge Testing',xlab='$bw$',ylab='p-value',ylim=c(0,1))
+weplus <- windowsE[windowsE>0]
+abline(v=bws[unique(weplus)],col=seq(length(unique(weplus))))
+legend('topright',legend=vapply(unique(weplus),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(weplus)[weplus==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(weplus))),lty=1)
+@
+\caption{P-values from total and edge testing for balance in all seven covariates
+  from the LSO analysis. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues1}
+\end{figure}
 
-source('src/cft/rdlocrand_fun.R')
-source('src/cft/rdrandinf.R')
-source('src/cft/rdsensitivity.R')
+In this case, total and edge testing paint similar pictures:
+covariates are imbalanced for most bandwidths.
+Both $\dhat_M^{0.5,0}$ and $\dhat_M^{a,b}$, marked with a green vertical
+lines in Figure \ref{fig:rdpvalue1}, select the lowest possible
+bandwidth.
+Since the first p-value \Sexpr{round(psT[1],3)} is below any $\alpha$
+considered, a strategy that chooses the last non-rejected bandwidth
+(denoted above as $\hat{d}_{\tilde{\alpha}}$) rejects every bandwidth.
+According to these methods, the CFT method is unsuitible for this
+dataset.
+However, the scattered large p-values at some bandwidths lead versions
+of $\dhat_\alpha$ to select larger bandwidthds.
+This fact illustrates a weakness of $\dhat_\alpha$: strong evidence
+against a model specification will be discarded in the presence of one
+favorable p-value.
 
-rdDat <- read.csv('data/rdlocrand_senate.csv')
-
-
-### code taken from rdlocrand-manual.pdf
-### downloaded from http://www-personal.umich.edu/~cattaneo/software/rdlocrand/R/ 12/22/81
-
-X  =  cbind(rdDat$presdemvoteshlag1, rdDat$population/1000000, rdDat$demvoteshlag1,
-             rdDat$demvoteshlag2, rdDat$demwinprv1, rdDat$demwinprv2, rdDat$dopen,
-             rdDat$dmidterm, rdDat$dpresdem)
-
-colnames(X) =  c("DemPres Vote", "Population", "DemSen Vote t-1",
-                  "DemSen Vote t-2", "DemSen Win t-1", "DemSen Win t-2",
-                  "Open", "Midterm", "DemPres")
-
-R = rdDat$demmv
-Y = rdDat$demvoteshfor2
-D = as.numeric(R>=0)
-
-
-### first, make sure I didnt mess anything up in rocios code:
-source('src/cft/rdwinselect.R')
-rocioWinOrig <- rdwinselect(R,X,quietly=TRUE,seed=10,wmin=0.5,wstep=0.125,nwindows=50)
-
-### now load in my modified code:
-source('src/cft/rdwinselectModified.R')
-## Rocio's p-values, window
-rocioWin <- rdwinselect(R,X,quietly=TRUE,seed=10,wmin=0.5,wstep=0.125,nwindows=50)
-stopifnot(all(vapply(1:length(rocioWin),function(i) all(rocioWin[[i]]==rocioWinOrig[[i]]),TRUE)))
-rm(rocioWinOrig)
-rocioWin$d <- which(rocioWin$results[,'W.length']==rocioWin$window[2])
-
-## my preferred p-values
-totPs <- rdwinselect(R,X,wmin=0.5,wstep=0.125,nwindows=50,approx=TRUE,
-                     statistic='hotelling',quietly=TRUE,seed=10,edge=FALSE)$results
-
-edgePs <- rdwinselect(R,X,wmin=0.5,obsstep=20,approx=TRUE,
-                      statistic='hotelling',quietly=TRUE,seed=10,edge=TRUE)$results
-
-### windows:
-alphas <- c(0.05,0.15,0.25)
-totWindows <- ds(totPs[,'p-value'],alphas=alphas)
-edgeWindows <- ds(edgePs[,'p-value'],alphas=alphas)
+\begin{figure}
+<<rdd2,fig.width=6,fig.height=4,results='hide'>>=
 
 par(mfrow=c(1,2))
-plot(totPs[,'W.length'],totPs[,'p-value'],xlab='bw',ylab='p-value',main='Total Test P-values',pch=16,xlim=c(0,10))
-abline(v=jitter(totPs[unlist(totWindows),'W.length'],amount=.2),col=2:5,lty=2)
-legend('topright',
-       legend=c('$\\hat{d}_{0.05}$','$\\hat{d}_{0.15}$',
-           '$\\hat{d}_{0.25}$','$\\hat{d}_{Mallik}$'),
-        col=2:5, lty=2)
+plot(bws,psT1,main='Total Testing: High School GPA',xlab='$bw$',ylab='p-value',ylim=c(0,1))
+wtplus <- windowsT1[windowsT1>0]
+abline(v=bws[unique(wtplus)],col=seq(length(unique(wtplus))))
+legend('topright',legend=vapply(unique(wtplus),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(wtplus)[wtplus==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(wtplus))),lty=1)
 
-plot(edgePs[,'W.length'],edgePs[,'p-value'],xlab='bw',ylab='p-value',main='Edge Test P-values',pch=16,xlim=c(0,10))
-abline(v=jitter(edgePs[unlist(edgeWindows),'W.length'],amount=.2),col=2:5,lty=2)
-legend('topright',
-       legend=c('$\\hat{d}_{0.05}$','$\\hat{d}_{0.15}$',
-           '$\\hat{d}_{0.25}$','$\\hat{d}_{Mallik}$'),
-        col=2:5, lty=2)
-
-estimates <- lapply(c(unlist(totWindows),unlist(edgeWindows)),
-                    function(d) rdrandinf(Y,R,wl=-totPs[d,'W.length'],wr=totPs[d,'W.length'],
-                                          ci=0.95,quietly=TRUE))
-
-rocioEst <- rdrandinf(Y,R,wl=rocioWin$window[1],wr=rocioWin$window[2],quietly=TRUE)
-
-results <- cbind(c('Total Tests',rep(NA,3),'Edge Tests',rep(NA,3)),
-                 rep(c('$\\hat{d}_{0.05}$','$\\hat{d}_{0.15}$',
-                       '$\\hat{d}_{0.25}$','$\\hat{d}_{Mallik}$'),2),
-                 d=c(unlist(totWindows),unlist(edgeWindows)),
-                 bw=round(totPs[c(unlist(totWindows),unlist(edgeWindows)),'W.length'],1),
-                 n=rowSums(totPs[c(unlist(totWindows),unlist(edgeWindows)),c('Obs<c','Obs>=c')]),
-                 Effect=round(vapply(estimates,function(x) x$obs.stat,1),2),
-                 p.value=round(vapply(estimates,function(x) x$p.value,1),3))
-results <- rbind(CFT=with(rocioWin,c(NA,NA,NA,round(window[2],1),
-                     sum(results[which(results[,'W.length']==window[2]),c('Obs<c','Obs>=c')]),
-                     round(rocioEst$obs.stat,2),round(rocioEst$p.value,3))),
-                 results)
-
-
-winNumL <- with(rocioWin,results[-1,'Obs<c']-results[-nrow(results),'Obs<c'])
-winNumH <- with(rocioWin,results[-1,'Obs>=c']-results[-nrow(results),'Obs>=c'])
+plot(bws,psE1,main='Edge Testing: High School GPA',xlab='$bw$',ylab='p-value',ylim=c(0,1))
+weplus <- windowsE1[windowsE1>0]
+abline(v=bws[unique(weplus)],col=seq(length(unique(weplus))))
+legend('topright',legend=vapply(unique(weplus),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(weplus)[weplus==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(weplus))),lty=1)
 @
+\caption{P-values from total and edge testing for balance in all seven covariates
+  from the LSO analysis. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues2}
+\end{figure}
 
 
+To better illustrate differences between the window selection
+strategies, we consider the covariate high school GPA alone.
+Since the outcme of interest is itself a GPA, prior measures of GPA
+are arguably the most relevant and important to control.
+P-values from total and edge tests of balance in high school GPA are
+displayed in Figure \ref{fig:rdpvalues2}.
+Fortunately for the illustration here, high school GPA may be
+balanced for small $bw$s.
+P-values from total and edge testing in \ref{fig:rdpvalues2} are
+markedly different.
+Edge testing shows some bandwiths, considered in
+isolation, appear to plausibly satisfy covariate balance, while others do not.
+On the other hand, the p-values from total testing are more nearly
+monotonic: imbalance in high school GPA at lower bandwidths causes
+balance tests to reject at higher bandwidths as well.
+The opposite also occurs: for instance, at bandwidth
+$\Sexpr{bws[16]}$, total testing gives \Sexpr{round(psT1[16],3)},
+whereas edge testing gives \Sexpr{round(psE1[16],3)}.
+The explanation is that high school GPA at that bandwidth is indeed
+imbalanced, but in the opposite direction of other imbalances: the AP
+students at $bw=$\Sexpr{bws[16]} had \emph{higher} high school GPAs
+than those who were not on AP, to an extent that counteracted
+imbalances at smaller bandwidths.
+
+That said, edge testing suggested larger bandwidths for almost all
+procedures.
+
+% For $\dhat_\alpha$ was moderate for total testing,
+% \Sexpr{bws[windowsT1[1]]} for $\alpha=$0.05 and
+% \Sexpr{bws[windowsT1[2]]} for $\alpha=$0.15 and 0.25,
+% and large for edge testing: \Sexpr{bws[windowsE1[1]]} for all three
+% values of $\alpha$, again illustrating the sensitivity of
+% $\dhat_\alpha$ to outlier p-values.
+% This is especially worrying for edge testing, in which small samples
+% for some values of $d$ can almost certainly ensure high p-values.
+% In this case, there were \Sexp{sum(ap[['r']]==bws[windowsE1[1]])}
+% control students and \Sexp{sum(ap[['r']]==-bws[windowsE1[1]])} AP
+% students at a bandwidth of $bw=$\Sexpr{bws[windowsE1[1]]}.
+
+% The change-point approach to window selection is less sensitive, since
+% it accounts for p-values at every bandwidth simultaneously.
+% The assymptotic change-point estimate, $\dhat_M^{0.5,0}$ chose
+% $bw=$\Sexpr{bws[windowsT1[4]]} with total testing
+% and \Sexpr{bws[windowsE1[4]]} with edge testing.
+% The finite sample version chose
+% $\dhat_M^{a,b}=$\Sexpr{bws[windowsT1[5]} for total
+% testing and \Sexpr{bws[windowsE1[5]]} for edge testing.
+% These estimates can capitalize on the strengths of edge testing, in
+% some circumstances, without necessariy succumbing to their weaknesses,
+% since they are not driven by individual p-values but by the entire
+% distribution.
+This example suggests that edge testing might only be suitible for
+change-point-based window selectors.
+Futher, the more flexible $\dhat_M^{a,b}$ outperformed the
+assymptotic estimator $\dhat_M^{0.5,1}$ by choosing
+$b=$\Sexpr{dhatm2['b']}, so that even moderately small p-values
+suggested departures from covariate balance.
 
 <<var>>=
 library(vars)

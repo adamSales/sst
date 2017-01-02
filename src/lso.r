@@ -1,5 +1,9 @@
 require(RItools)
-ap <- read.csv('~/Dropbox/Sales Hansen/drafts/dataResults/LindoDat.csv')
+require(foreign)
+source('src/winSelect.r')
+ap <- read.dta('data/AEJApp2008-0202_data/data_for_analysis.dta')
+#### downloaded 1/2/17 from https://www.aeaweb.org/aej/app/data/2008-0202_data.zip
+
 ap$r <- round(ap$dist_from_cut,2)
 ap <- ap[abs(ap$r)<=0.5,]
 ap$r <- round(ap$r+0.005,3)
@@ -8,7 +12,7 @@ ap$z <- ap$r<0
 
 bws <- sort(unique(abs(ap$r)))
 
-balform <- z~hsgrade_pct+age_at_entry+totcredits_year1+male+loc_campus1+loc_campus2+english
+balform <- z~hsgrade_pct+age_at_entry+totcredits_year1+male+loc_campus1+loc_campus2+english+
     bpl_north_america
 
 balTestT <- function(bw){
@@ -24,12 +28,15 @@ balTestE <- function(bw){
 psT <- vapply(bws,balTestT,1)
 psE <- vapply(bws,balTestE,1)
 
-balTestTW <- function(bw){
+windowsT <- dhatAll(psT)
+windowsE <- dhatAll(psE[-51]) ## the last value is NA
+
+balTestT1 <- function(bw){
     datbw <- ap[abs(ap$r)<=bw,]
     with(datbw,wilcox.test(hsgrade_pct[z],hsgrade_pct[!z]))$p.value
 }
 
-balTestEW <- function(bw){
+balTestE1 <- function(bw){
     datbw <- ap[abs(ap$r)==bw,]
     res <- try(with(datbw,wilcox.test(hsgrade_pct[z],hsgrade_pct[!z]))$p.value)
     if(class(res)=='try-error') return(NA)
@@ -38,5 +45,10 @@ balTestEW <- function(bw){
 }
 
 
-psTW <- vapply(bws,balTestTW,1)
-psEW <- vapply(bws,balTestEW,1)
+psT1 <- vapply(bws,balTestT1,1)
+psE1 <- vapply(bws,balTestE1,1)
+
+windowsT1 <- dhatAll(psT1)
+windowsE1 <- dhatAll(psE1[-51])
+
+dhatm2 <- dhatM2(psE1[-51])
