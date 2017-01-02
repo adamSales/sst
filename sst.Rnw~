@@ -1,0 +1,77 @@
+\documentclass[12pt]{article}
+
+\usepackage{endfloat}
+%\usepackage{soul}
+\usepackage{type1ec}
+\usepackage{subcaption}
+\usepackage{fullpage}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{multirow}
+\usepackage{comment}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+%\usepackage{bbm}
+\usepackage{setspace}
+\usepackage{verbatim}
+\usepackage{natbib}
+\usepackage{bm}
+\usepackage{pdflscape}
+%\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usepackage{xr}
+%\usepackage{mathabx}
+%\usepackage{filecontents}
+%\usepackage{bibentry}
+%\usepackage{hanging}
+%\usepackage{apacite}
+\usepackage{hyperref}
+
+%\usepackage{endnotes}
+
+%\let\footnote=\endnote
+
+
+\doublespacing
+\newcommand{\bx}{\bm{X}}
+\newcommand{\ncm}{n_{Cm}}
+\newcommand{\ntm}{n_{Tm}}
+\newcommand{\bycm}{\bm{y}_{Cm}}
+\newcommand{\est}{\hat{\tau}_{rebar}}
+\newcommand{\yci}{y_{Ci}}
+\newcommand{\yti}{y_{Ti}}
+\newcommand{\yhati}{\hat{y}_{Ci}}
+\newcommand{\yhat}{\hat{y}_C}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\indicator}[1]{\mathbf{1}_{\left[ {#1} \right] }}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\newcommand{\Match}{M}
+\newcommand{\match}{m}
+\newcommand{\algorithm}{\hat{y}_C(\cdot)}
+\newcommand{\covMat}{\bm{X}}
+\newcommand{\covVec}{x}
+
+%\newcommand\verb|xBalance()|{\verb| xBalance() |}
+
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{ce}{Counter-Example}
+%\newtheorem{ass}{Assumption}
+\newtheorem{alg}{Algorithm}
+%\newtheorem*{ass*}{Assumption}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+\newenvironment{ass}[2][Assumption:]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2}.]}{\end{trivlist}}
+
+@
+
+
+\title{Rebar: Reinforcing a Matching Estimator with Predictions from
+  High-Dimensional Covariates}
+
+\author{Adam Sales \& Ben B Hansen \& Brian Rowan}
+
+\begin{document}

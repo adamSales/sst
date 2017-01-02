@@ -1,0 +1,4 @@
+dhatAlpha <- function(ps,alpha){
+    D <- length(ps)
+    max(seq(D)[ps>=alpha])
+}

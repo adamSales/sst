@@ -1,0 +1,10 @@
+ap <- read.csv('~/Dropbox/Sales Hansen/drafts/dataResults/LindoDat.csv')
+ap$r <- round(ap$dist_from_cut,2)-0.005
+ap <- ap[abs(ap$r)<0.5,]
+
+ap$z <- ap$r<0
+
+bws <- unique(abs(ap$r))
+
+balform <- z~lhsgrade_pct+age_at_entry+totcredits_year1+male+loc_campus1+loc_campus2+
+    bpl_north_america+english
