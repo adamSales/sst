@@ -483,32 +483,50 @@ The two examples correspond to the two broad categories of
 specification we have discussed: selecting data to analyze and
 selecting a model specification.
 
-\subsection{Regression Discontinuity to Estimate the Advantage of
-  Incumbency}
-Incumbency advantage---the extent to which electoral candidates
-benefit from incumbency satus---is a longstanding problem in political
-science \citet[See][and citations therein]{gelmanAndKing}.
-While there are good theoretical reasons to suspect a strong
-incumbency advantage, there are also serious sources of confounding
-that must be accounted for.
-A popular recent approach, beginning with \citet{leeElections} is to
-rely on the Regression Discontinuity Design (RDD) inherent in
-two-party majoritarian elections.
-A candidate is elected to statewide office in the United States if and
-only if his or her vote share exceeds the cutoff $c=$50\%.
-In a given election, say time $t$, the incumbent's previous vote
-share, at time $t-1$, is the
-``running variable,'' which drives the assignment of
-``treatment''---incumbency.
-The outcome $Y$ is the incumbent's vote share at time $t$.
-See, however, \citet{caughySekhon}, who offer a skeptical take.
+\subsection{SSTs in Regression Discontinuity Bandwidth Selection:
+  Estimating the Effect of  Academic Probation on College GPAs}
 
+At many universities, students who fail to achieve a minmum GPA are
+put on academic probation (AP) \citep[See, e.g.][]{tovar2006academic}.
+This provides them access to a set of resources designed to address
+personal issues that may be hindering their  performance.
+Perhaps more importanty, AP is a threat---students on AP who do not
+improve are subject to disciplinary measures such as suspension.
+\citet{LSO} recognized that AP can form a regression discontinuity
+design (RDD), in which treatment is a function of a ``running
+variable'' with a pre-determined cutoff.
+Specifically the treatment $Z$, students' AP status, is (almost) a
+deterministic function of a ``running variable'' $R$, students'
+grade-point-averages (GPAs).
+Students with a GPA below a pre-determined cutoff, $R<c$, are put on AP.
+That being the case, students with GPAs just below $c$ may be
+comparable to students with GPAs just above $c$---comparing these two
+sets of students allows researchers to estimate the effect of AP on
+outcomes $Y$.
+The challange becomes defining ``just above'' and ``just below''; SSTs
+may be able to play a role here.
+
+For example, \citet*{rocio} (CFT) suggests directly
+comparing the outcomes of subjects with $R$ very close to $c$, say with
+$R\in [c-bw,c+bw]$ for some bandwidth $bw>0$
+To choose $bw$, CFT uses pre-treatment covariates $\bm{X}$, and
+covariate balance tests range of candidate bandwidths.
+For each possible $bw$, they test the hypothesis that the covariates
+are balanced:
+\begin{equation}\label{eq:covBal}
+\bm{X}\independent Z| R\in[c-bw,c+bw]
+\end{equation}
+and choose the largest bandwidth in which (\ref{covBal}) cannot be
+rejected.
+
+Bandwidth selection for RDDs, and the role of covariate balance tests,
+encompasses a growing literature.
 As its name suggests, regression discontinuity typically relies on
 regression modeling: the goal is to model $Y$ as a function of $R$ on
-either side of $c$ to estimate the ``local average treatment effect,''
-roughly the average treatment effect for subjects with $R$ in an
-infinitesimally-small interval around the cutoff $c$
-\citep[See][]{imbensRD}.
+either side of $c$ to estimate the average treatment effect for
+subjects with $R$ in an infinitesimally-small interval around the
+cutoff $c$ \citep[See][]{imbensRD}.
+In contrast, CFT dispenses with regression alltogether.
 One popular way to ensure robustness to model misspecification is to
 fit the regression models to a subset of the data with $R$ in a
 window around $c$.
@@ -519,30 +537,24 @@ estimation but small enough to ensure robustness.
 the regression function of $Y$ on $R$, combined with local linear
 regression, to choose a $bw$ that minimizes mean-squared-error.
 However, other authors have suggested choosing $bw$ (or an analogous quantity) based on
-SSTs, including \citet{salesHansen}, which discusses the use of robust
-regression models, \citet{mattai}, which presents a Bayesian approach, and
-\citet{angristWanna}, which proposes a method to estimate effects for
-subjects with $R$ farther from $c$.
+SSTs, including \citet{mattai}, which presents a Bayesian approach
+analogous to CFT's, \citet{salesHansen}, which discusses the use of robust
+regression models,  and \citet{angristWanna}, which proposes a method
+to estimate effects for subjects with $R$ farther from $c$.
+In the latter paper, SSTs do not test covariate balance, but the
+irrelevence of $R$ conditional on covariates $X$, for subjects in a
+given bandwidth.
 
-Perhaps the simplest approach to RDDs is \citet{rocio}, which
-dispenses with regression alltogether, opting instead to directly
-compare the outcomes of subjects with $R$ very close to $c$, say with
-$R\in c\pm bw$.
-In this model, selection of $bw$ is not merely a matter of ensuring
-robustness, but instead drives the indentification---subjects within
-$bw$ of $c$, on either side, must resemble each other on observed and
-unobserved pre-treatment covariates.
-For that reason, \citet{rocio} was perhaps the first to suggest using
-covariate balance tests---essentially tests for a treatment effect on
-pre-treatment covariates---to choose $bw$.
-
-%When there are several covariates measured, they suggest using the
-%minimum of the p-values from balance tests of each of the covariates.
+This section will illustrate several approaches to SSTs in the context
+of estimating the effect of AP for first year college students on
+subsequent GPAs.
+For the sake of simplicty, the discussion will be limited to CFT's
+general approach to regression discontinuity designs; however, many of
+the SST methods can be extended to other RDD analyses.
 
 <<rdd>>=
-
-### downloaded from http://www-personal.umich.edu/~cattaneo/software/rdlocrand/R/ 12/22/81
-
+source('src/winSelect.r')
+source('src/lso.r')
 
 
 
@@ -632,57 +644,6 @@ winNumL <- with(rocioWin,results[-1,'Obs<c']-results[-nrow(results),'Obs<c'])
 winNumH <- with(rocioWin,results[-1,'Obs>=c']-results[-nrow(results),'Obs>=c'])
 @
 
-\citet{rocio} used their method to estimate incumbency advantage in
-US Senate elections.\footnote{In fact, they estimated two different
-  types of incumbency advantage; for purposes of illustration, we
-  focus here on only their ``Design I.''}
-They gathered a dataset from public sources including every senate
-election from 1914, the first year senators were elected by state
-popular votes, to 2010.
-For each election, they also gathered nine covariates: the Democratic
-share of the statewide presidential vote in the previous presidential
-election, the state population, the Democratic share and indicators
-for Democratic victory in each of the previous two
-senate elections (each senator only stands for re-election in every
-third election), an indicator for an open seat in the current
-election, an indicator for midterm elections (i.e. no on presidential
-electio years) and an indicator for a Democratic president.
-Starting with a bandwidth of half a percentage point, and increasing
-in increments of 1.25 percentage points, they tested for eqality of
-means for elections either side of the cutoff---close Democratic wins
-and close Republican wins---at a sequence of 77 bandwidths.
-To accommodate all nine covariates, they chose, as $p_d$, the minimum
-p-value across covariates.
-Finally, they chose the $\hat{d}_{\tilde{\alpha}}^{th}$
-bandiwdth---the largest bandwidth before the first p-value less than
-the threshold 0.15.
-This resulted in a bandwidth of \Sexpr{rocioWin[['window']][2]} percentage points, or a window of
-(\Sexpr{round(c(50-rocioWin[['window']][2],2),50+rocioWin[['window']][2],2)}),
-which included \Sexpr{rocioWin$results[rocioWin$d,'Obs<c']} Republican
-incumbents and \Sexpr{rocioWin$results[rocioWin$d,'Obs>=c']}
-Democratic incumbents.
-
-We extended their analysis in order to illustrate the banwidth choices
-$\dhat_\alpha$ and $\dhatm$, as well as the difference between total
-and edge testing.
-Rather than combine balance tests for individual covariates by taking
-their minimum---a quantity that is not drawn from the uniform
-distribution---we estimated omnibus p-values using the test in
-\citet{hansenBowers}, a modification of Hotelling's $T^2$ test
-designed specifically to test covariate balance in randomized trials.
-Other than that modification, our total testing procedure was the same
-as \citet{rocio}'s.
-We tested covariate balance in a sequence of nested windows generated
-by the sequence of bandwidths $bw_d=0.5, 0.625, 0.750,...,1$.
-
-The edge testing procuedre required an additional modification:
-a coarser division of the interval $(0,100)$ of electoral margins from
-which candidate bandwidths are chosen.
-In CFT's analysis, and in our ``total tests'' analysis, each new
-bandwidth was 0.125 percentage points larger than the previous choice.
-This coarsening added, on average, about \Sexpr{round(winNumL)}
-subjects on each side of the cutoff.
-In the edge testing
 
 
 <<var>>=
