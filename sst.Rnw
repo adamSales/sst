@@ -704,6 +704,8 @@ assymptotic estimator $\dhat_M^{0.5,1}$ by choosing
 $b=$\Sexpr{dhatm2['b']}, so that even moderately small p-values
 suggested departures from covariate balance.
 
+\subsection{SSTs to Choose Lag Order in AR($\rho$) Models:
+
 <<var>>=
 library(vars)
 @
