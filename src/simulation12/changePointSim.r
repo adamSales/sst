@@ -65,11 +65,20 @@ simOne <- function(n,curved,beta=0.1,alphas=c(0.05,0.15,0.25)){
 simTot <- function(nsims,ns =c(10,50,100),beta=beta){
 
     results <- list()
-    stuff <- c(ls(envir=.GlobalEnv)[vapply(ls(envir=.GlobalEnv), function(obj) class(get(obj))[1],'a')=='function'],'r','bws')
+    stuff <- c(
+        ls(envir=.GlobalEnv)[
+            vapply(ls(envir=.GlobalEnv), function(obj) class(get(obj,envir=.GlobalEnv))[1],'a')
+            =='function'],'r','bws','beta')
     print(stuff)
     clusterExport(cl,stuff)
-    for(n in ns) for(beta in betas){
-        results[[paste0(n,'_',beta)]] <- parLapply(cl,1:nsims,function(i) simOne(n,beta))
+    for(N in ns){
+        print(N)
+        results[[paste0('mono_',N)]] <-
+            parLapply(cl,1:nsims,function(i) simOne(n=N,curved=FALSE,beta=0.1))
+        save(results,file='results.RData')
+        print('part 2')
+        results[[paste0('curved_',N)]] <-
+            parLapply(cl,1:nsims,function(i) simOne(n=N,curved=TRUE,beta=0.1))
         save(results,file='results.RData')
                  }
     stopCluster(cl)
