@@ -43,8 +43,9 @@ dhatAlphaBad <- function(ps,alpha){
     res
 }
 
-dhatAll <- function(ps, alphas=c(0.05,0.15,0.25)){
-    setNames(
+dhatAll <- function(ps, alphas=c(0.05,0.15,0.25),backwards=FALSE){
+    if(backwards) ps <- ps[length(ps):1]
+    res <- setNames(
         c(vapply(alphas, function(alph) dhatAlpha(ps,alph),1),
           #vapply(alphas, function(alph) dhatAlphaBad(ps,alph),1),
           dhatM(ps),
@@ -53,5 +54,7 @@ dhatAll <- function(ps, alphas=c(0.05,0.15,0.25)){
           #paste0('\\dhat_{\tilde{',alphas,'}}'),
           '\\dhat^{0.5,0}_M','\\dhat^{a,b}_M')
         )
+    if(backwards) res <- vapply(res,function(x) length(ps)-x+1,1)
+    res
 }
 

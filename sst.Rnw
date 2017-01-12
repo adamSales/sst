@@ -704,10 +704,37 @@ assymptotic estimator $\dhat_M^{0.5,1}$ by choosing
 $b=$\Sexpr{dhatm2['b']}, so that even moderately small p-values
 suggested departures from covariate balance.
 
-\subsection{SSTs to Choose Lag Order in AR($\rho$) Models:
+\subsection{Lag Order in AR($\rho$) Models: US Total Unemployment}
+
 
 <<var>>=
-library(vars)
+source('src/timeSeries2.r')
+
+par(mfrow=c(1,2))
+plot(pvals2,pch=16,xlab='Lag Order',ylab='LR Test p-value',main='Edge Tests')
+abline(v=dhatsEdge,col=seq(length(unique(dhatsEdge))))
+legend('topleft',legend=vapply(unique(dhatsEdge),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(dhatsEdge)[dhatsEdge==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(dhatsEdge))),lty=1)
+
+plot(pvalsFull2,pch=16,xlab='Lag Order',ylab='LR Test p-value',main='Full Tests')
+abline(v=dhatsEdge,col=seq(length(unique(dhatsEdge))))
+legend('topleft',legend=vapply(unique(dhatsEdge),function(bw)
+    do.call('paste', c(as.list(paste0('$',names(dhatsEdge)[dhatsEdge==bw],'$')),sep=',')),'a'),
+       col=seq(length(unique(dhatsEdge))),lty=1)
+@
+\caption{P-values from total and edge testing for balance in all seven covariates
+  from the LSO analysis. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues1}
+\end{figure}
+
+
+
+par(mfrow=c(1,2))
+
+
+
 @
 
 

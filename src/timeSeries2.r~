@@ -1,0 +1,35 @@
+library(urca)
+data(npext)
+y <- ts(na.omit(npext$unemploy), start=1909, end=1988, frequency=1)
+op <- par(no.readonly=TRUE)
+layout(matrix(c(1, 1, 2, 3), 2, 2, byrow=TRUE))
+plot(y, ylab="unemployment rate (logarithm)")
+acf(y, main='Autocorrelations', ylab='', ylim=c(-1, 1))
+pacf(y, main='Partial Autocorrelations', ylab='', ylim=c(-1, 1))
+par(op)
+arma20 <- arima(y, order=c(2, 0, 0))
+res20 <- residuals(arma20)
+tsdiag(arma20)
+Box.test(res20, lag = 20, type =  "Ljung-Box")
+shapiro.test(res20)
+arma30 <- arima(y, order=c(3, 0, 0))
+
+
+arp <- lapply(0:20,function(p) arima(y,order=c(p,0,0)))
+lrTest <- function(p){
+    stopifnot(p>0)
+    p <- p+1
+    llBig <- logLik(arp[[p+1]])
+    llSmall <- logLik(arp[[p]])
+    lrtest <- as.numeric(2*(llBig-llSmall))
+    pchisq(lrtest , df = 1, lower.tail = FALSE)
+}
+pvals <- vapply(20:1,lrTest,1)
+
+lrTestFull <- function(p){
+    stopifnot(p<20)
+    p <- p+1
+    llBig <- logLik(arp[[21]])
+    llSmall <- logLik(arp[[p]])
+    lrtest <- as.numeric(2*(llBig-llSmall))
+    pchisq(lrtest , df = 1, lower.tail = FALSE)
