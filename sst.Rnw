@@ -617,7 +617,7 @@ According to these methods, the CFT method is unsuitible for this
 dataset.
 However, the scattered large p-values at some bandwidths lead versions
 of $\dhat_\alpha$ to select larger bandwidthds.
-This fact illustrates a weakness of $\dhat_\alpha$: strong evidence
+rThis fact illustrates a weakness of $\dhat_\alpha$: strong evidence
 against a model specification will be discarded in the presence of one
 favorable p-value.
 
@@ -667,7 +667,7 @@ whereas edge testing gives \Sexpr{round(psE1[16],3)}.
 The explanation is that high school GPA at that bandwidth is indeed
 imbalanced, but in the opposite direction of other imbalances: the AP
 students at $bw=$\Sexpr{bws[16]} had \emph{higher} high school GPAs
-than those who were not on AP, to an extent that counteracted
+athan those who were not on AP, to an extent that counteracted
 imbalances at smaller bandwidths.
 
 That said, edge testing suggested larger bandwidths for almost all
@@ -704,12 +704,50 @@ assymptotic estimator $\dhat_M^{0.5,1}$ by choosing
 $b=$\Sexpr{dhatm2['b']}, so that even moderately small p-values
 suggested departures from covariate balance.
 
-\subsection{Lag Order in AR($\rho$) Models: US Total Unemployment}
+\subsection{Lag Order in AR($p$) Models: US Total Unemployment}
 
+\begin{figure}
+<<ts,fig.width=6,fig.height=4,results='hide'>>=
 
-<<var>>=
 source('src/timeSeries2.r')
+plot(y)
+@
+\caption{The United States total unemployment rate from 1890 to
+  2016. Data combined from \citet{urca} and \citet{bls}.}
+\label{fig:unemployment}
+\end{figure}
 
+Figure \ref{fig:unemployment} shows the United States total
+unemployment rate from 1890 to 2016.
+Assume that it follows an ``AR($p$)'' model; that is,
+\begin{equation}\label{eq:arp}
+unemp_t=\mu + \displaystyle\sum_{i=1}^p \phi_i unemp_{t-i}+\epsilon_t
+\end{equation}
+where $\mu$ and $\{\phi_i\}_{i=1}^p$ are parameters to be estimated
+and $\epsilon_t$ is white noise.
+In this model, the unemployment in one year is a function of
+unemployment rates in the previous $p$ years, but conditionally
+independent of even earlier measurements.
+More generally, we may write (\ref{eq:arp}) as
+\begin{equation}\label{eq:arpinf}
+unemp_t=\mu+\displaystyle\sum_{i=1}^\infty \phi_i
+unemp_{t-i}+\epsilon_t
+\end{equation}
+with $\phi_i=0$ for $i>p$.
+
+Having settled on model (\ref{eq:arp}), the analyst must choose $p$,
+the lag order.
+SSTs can be useful here \citep[e.g.][]{practitionersGuide}.
+Consider the null hypothesis $H_p: \phi_i=0$ for all $i>p$;
+a reasearcher could test a sequence of such null hypotheses, for a set
+of plausible values of $p$, and choose the $p$ based on the results.
+Of course, there are other options for choosing $p$, including
+substantive theory or optimizing
+information criteria, like AIC or BIC \citep{
+
+
+
+<<varResults>>=
 par(mfrow=c(1,2))
 plot(pvals2,pch=16,xlab='Lag Order',ylab='LR Test p-value',main='Edge Tests')
 abline(v=dhatsEdge,col=seq(length(unique(dhatsEdge))))
