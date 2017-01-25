@@ -1,6 +1,6 @@
 library(urca)
 data(npext)
-y <- npext$unemploy
+y <- npext$unemploy[31:nrow(npext)]
 y2 <- data.frame(Year=1890:1988,unemp=y)
 new <- read.csv('data/unemployment2.csv',header=F)
 new <- with(new,data.frame(year=V1,unemp=log(V16)))
