@@ -78,8 +78,11 @@ simTot <- function(nsims,ns =c(10,50),betas=c(0.05,0.1,.2)){
     results
 }
 
-fix <- function(st)
-    lapply(st,function(x) do.call('rbind',x))
+fix <- function(st){
+    ff <- lapply(st,function(x) do.call('rbind',x))
+    for(i in seq(length(st))) attr(ff[[i]],'runName') <- names(st)[i]
+    ff
+}
 
 summaries <- function(x){
     round(c(mean=mean(x,na.rm=TRUE),
@@ -98,7 +101,9 @@ violin <- function(run){
     args[['names']] <- colnames(run)
     do.call('vioplot',args)
     abline(h=10,lty=2)
+    text(2,5,attr(run,'runName'))
     }
+
 
 
 

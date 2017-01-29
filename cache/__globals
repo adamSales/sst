@@ -2,3 +2,5 @@ functions	>=	[[<-	c	cumsum	for	length	list	max	paste0	seq	which.max
 rdd	==	>	abline	as.list	bws	c	do.call	legend	length	names	par	paste0	plot	psE	psT	seq	source	unique	vapply	windowsE	windowsT
 rdd2	==	>	abline	as.list	bws	c	do.call	legend	length	names	par	paste0	plot	psE1	psT1	seq	unique	vapply	windowsE1	windowsT1
 var	library
+lsoAnalysis	source
+timeSeriesAnalysis	source

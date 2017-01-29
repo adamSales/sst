@@ -17,6 +17,7 @@ names(tsdat)[4] <- 'priceIndex'
 tsdat <- merge(tsdat,fedfund)
 names(tsdat)[5] <- 'fedfund'
 
+<<<<<<< Updated upstream
 tsdat <- as.ts(tsdat)
 
 mod <- VAR(tsdat[,-1],49)
@@ -77,3 +78,8 @@ makePs <- function(mods,maxp){
     }
     res
 }
+=======
+tsdat <- as.ts(ts[,-1])
+
+mods <- lapply(1:60,function(p) VAR(tsdat,p))
+>>>>>>> Stashed changes

@@ -168,3 +168,41 @@ violinTot <- function(st,ns,bs){
     for(n in ns) for(b in bs) plots[[paste0(n,'_',b)]] <- violin2(st[[paste0(n,'_',b)]],n,b)
     multiplot(plotlist=plots,cols=2)
 }
+
+
+aaa <- function(st){
+
+
+    plotlist <- list()
+    for(curv in c('mono','curved'))
+        for(n in c(10,50,100)){
+            run <- do.call('rbind',lapply(st[[paste0(curv,'_',n)]],function(x) x[[2]]))
+            plotlist[[paste0(curv,n)]] <- violin3(run,curv,n)
+        }
+
+    multiplot(plotlist=plotlist,  cols=2)
+
+}
+
+
+
+violin3 <- function(run,n,curv){
+    st1 <- do.call('c',as.data.frame(run))
+    st1 <- data.frame(est=st1,method=rep(colnames(run),each=nrow(run)))
+    st1$selector <- ifelse(grepl('max',st1$method),'$\\bar{d}_\\alpha$',
+                       ifelse(grepl('min',st1$method),'$\\underline{d}_\\alpha$','\\hat{d}_M'))
+    st1$method <- gsub('\\\\\\hat\\{d\\}\\^\\{m[axin]*\\}_\\{','$\\\\\\alpha=',st1$method)
+    st1$method <- gsub('\\}','$',st1$method)
+    st1$method <- gsub('\\\\\\hat\\{d\\$\\^\\{flex\\$_M','a,b',st1$method)
+    st1$method <- gsub('\\\\\\hat\\{d\\$_M','0.5,1',st1$method)
+
+    st1$method <- factor(st1$method)
+
+
+    p <- ggplot(st1, aes(x=method, y=est,fill=edge)) +
+        geom_violin(bw=1,position=position_dodge(.5))+
+        geom_boxplot(width=0.1,position=position_dodge(.5))+
+        geom_hline(yintercept=10,lty=2)+
+        labs(title=paste('n=',n,curv),x='$\\hat{d}$')
+    p
+}

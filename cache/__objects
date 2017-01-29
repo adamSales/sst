@@ -2,3 +2,5 @@ functions	dhatAlpha	dhatm	ds
 rdd	weplus	wtplus
 rdd2	weplus	wtplus
 var	
+lsoAnalysis	
+timeSeriesAnalysis	aics	arp	bics	dhatsEdgeTS	lrTest	new	npTS	npext	pvalsTS	y	y2

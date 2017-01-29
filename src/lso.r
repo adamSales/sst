@@ -54,52 +54,22 @@ windowsE1 <- dhatAll(psE1[-51])
 dhatm2 <- dhatM2(psE1[-51])
 
 
-smoothplot <- function(x,y,data=0,cts=FALSE,trend=TRUE,polynomial=FALSE,xlab='Running Variable',ylab='Outcome',cutpoint=0,...){
+smoothplot <- function(x,y,...){
 
-  if(is.matrix(data)) data=as.data.frame(data)
-	if(is.data.frame(data)){
-		x <- match.call()$x
-		y <- match.call()$y
-		x <- with(data,eval(x))
-    y <- with(data,eval(y))
-  }
 
-  if(sum(is.na(x))+sum(is.na(y))>0){
-    warning('deleting NAs')
     naFlag <- is.na(x) | is.na(y)
     x <- x[!naFlag]
     y <- y[!naFlag]
-  }
-	if(length(unique(x))==length(x)){
-	  cts=TRUE
-	  warning('No ties present, so setting cts=TRUE')
-	}
-	if(cts) x=signif(x,3) # o.w. for cts variables smoothplot==plot
 
-	stopifnot(length(x)==length(y))
 
-  tmp <- vapply(unique(x), function(xval) c(
-    av=mean(y[x==xval],na.rm=TRUE),
-    sizes = length(y[x==xval])
-  ),numeric(2))
+    tmp <- vapply(unique(x), function(xval) c(
+        av=mean(y[x==xval],na.rm=TRUE),
+        sizes = length(y[x==xval])
+        ),numeric(2))
 
-  tmp['sizes',] <- 2*tmp['sizes',]/max(tmp['sizes',])
-  plot(unique(x),tmp['av',],cex=tmp['sizes',],xlab=xlab,ylab=ylab,...)
-  abline(v=cutpoint,lty='dotted')
+    tmp['sizes',] <- 2*tmp['sizes',]/max(tmp['sizes',])
+    plot(unique(x),tmp['av',],cex=tmp['sizes',],...)
+    abline(v=0,lty='dotted')
 
-  if(trend){
-    if(polynomial){
-      ord <- 2 ## put in option?
-      mod <- lm(y~poly(x,ord)*I(x>0))
-      coefs <- coef(mod)
-      expr <- function(x)
-        predict(mod,newdata = data.frame(x=x))
-     curve(expr,min(x),-1e-5,add=TRUE,col='red')
-     curve(expr,from = 1e-5, to = max(x),col='blue', add=TRUE)
-    }
-    else{
-      lines(lowess(x[x<=0],y[x<=0],f=1),col='red')
-      lines(lowess(x[x>=0],y[x>=0],f=1),col='blue')
-    }
-  }
+
 }
