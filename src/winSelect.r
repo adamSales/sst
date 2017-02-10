@@ -42,3 +42,19 @@ dhatAlphaBad <- function(ps,alpha){
     if(class(res)=='try-error') return(NA)
     res
 }
+
+dhatAll <- function(ps, alphas=c(0.05,0.25),backwards=FALSE){
+    if(backwards) ps <- ps[length(ps):1]
+    res <- setNames(
+        c(vapply(alphas, function(alph) dhatAlpha(ps,alph),1),
+          vapply(alphas, function(alph) dhatAlphaBad(ps,alph),1),
+          dhatM(ps),
+          dhatM2(ps)[2]),
+        c(paste0('$\\bar{d}_{',alphas,'}$'),
+          paste0('$\\underline{d}_{',alphas,'}$'),
+          '$\\dhatm$','$\\dhatmab$')
+        )
+    if(backwards) res <- vapply(res,function(x) length(ps)-x+1,1)
+    res
+}
+

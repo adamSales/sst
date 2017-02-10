@@ -1,0 +1,500 @@
+bws[windowsE]
+windowsE
+bws[0]
+bws[0] <- 0
+bws[0]
+source('src/lso.r')
+source('src/lso.r')
+c(0,bws)[windowsT+1]
+bws[windowsT]
+floor(2/2)
+rm(list=ls())
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+options()$tikzLatexPackages
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+q('no')
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+source('src/lso.r')
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+TeXMetrics
+traceback()
+knit('sst.Rnw')
+traceback()
+knit('sst.Rnw')
+knit('sst.Rnw')
+traceback()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(knitr)
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+opts_chunk$set(
+echo=FALSE, results='asis',cache=FALSE,warning=FALSE,error=FALSE,dev='tikz',message=FALSE,autodep = TRUE
+    )
+opts_chunk
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+options(tikzDefaultEngine = "pdftex")
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+options( tikzLatexPackages = c(
+getOption( "tikzLatexPackages" ),
+             "\\usepackage{amsmath,amssymb,amsfonts,amsthm}",
+  "\\newcommand{\\dalphaU}{\\bar{\\hat{d}}_\\alpha}",
+"\\newcommand{\\dalphaB}{\\underline{\\hat{d}}_\\alpha}",
+"\\newcommand{\\dstar}{d^*}",
+"\\newcommand{\\ps}{\\bm{p}_D}",
+"\\newcommand{\\dhat}{\\hat{d}}",
+"\\newcommand{\\dhatU}{\\bar{\\hat{d}}}",
+"\\newcommand{\\dhatB}{\\underline{\\hat{d}}}",
+             "\\newcommand{\\dhatm}{\\hat{d}_M}",
+             "\\usepackage[utf8]{inputenc}","\\usepackage[T1]{fontenc}", "\\usetikzlibrary{calc}"
+))
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+knit('sst.Rnw')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(knitr)
+knit('test.Rnw')
+knit('test.Rnw')
+knit('test.Rnw')
+q('no')
+library(knitr)
+knit('test.Rnw')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+knit('test.Rnw')
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+knit('test.Rnw')
+library(knitr)
+knit('test.Rnw')
+knit('test.Rnw')
+npext
+write.table(npext,file='npext.csv',sep=',',row.names=FALSE)
+write.table(npext,file='data/npext.csv',sep=',',row.names=FALSE)
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(knitr)
+knit('test.Rnw')
+knit('sst.Rnw')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+q('no')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+library(knitr)
+knit('test.Rnw')
+knit('test.Rnw')
+knit('test.Rnw')
+library(tikzDevice)
+tikz(standAlone = FALSE)
+plot(1,1)
+dev.off()
+knit('test.Rnw')
+q('no')
+pload('src/simulation12/results.RData')
+aaa(st)
+source('src/simulation12/changePointSim.r')
+aaa(st)
+library(ggplot2)
+aaa(st)
+names(st)
+n=100
+curv='curved'
+str(run)
+boxplot(run[,1])
+apply(run,2,function(x) quantile(x,0.95))
+run2 <- run
+curv='mono'
+all.equal(run,run2)
+plot(run[,1],run2[,1])
+aaa(st)
+dat <- makeData(50,TRUE)
+str(dat)
+mean(dat[,1:30])
+mean(dat[,31:60])
+plot(apply(dat,2,mean))
+curve(sin(x),-2*pi,2*pi)
+x
+dim(x)
+plot(apply(x,2,mean))
+curve(ifelse(abs(x)>10,
+                            sin((x-10*sign(x))*2*pi/10),0),-30,30)
+curve(ifelse(abs(x)>10,
+                            sin((x-10*sign(x))*pi/10),0),-30,30)
+plot(apply(x,2,mean))
+mean(x[,1:30])
+mean(x[,31:60])
+t.test(x[,1:30],x[31:60])
+for(bw in 2:30) print(test(x,bw,FALSE))
+source('src/simulation26/changePointSim.r')
+simOne(50,TRUE)
+source('src/simulation26/changePointSim.r')
+st <- simTot(1000)
+aaa(st)
+aaa(st)
+str(st1)
+str(st1)
+table(st1$selector)
+table(st1$method)
+?position_dodge
+violin3(run,10,'curved')
+violin3(run,10,'curved')
+names(st)
+ns
+facet(st,FALSE)
+facet(st,FALSE)
+curv <- FALSE
+ns
+facet(st,FALSE)
+str(dat)
+print(p)
+facet(st,FALSE)
+?facet <- wrap
+?facet_wrap
+facet(st,FALSE)
+str(dat)
+head(dat)
+head(dat)
+facet(st,FALSE)
+facet(st,TRUE)
+call.st <- "st <- simTot(1000)"
+getwd()
+save(list=c('ls',as.vector(lsf.str()),'call.st'),file='src/simulation26/simulation.RData')
+lsf.str()
+facet(st,TRUE)
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+ap
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+q('no')
+knit('sst.Rnw')
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+print(load('src/simulation26/simulation.RData'))
+save(list=c('st',as.vector(lsf.str()),'call.st'),file='src/simulation26/simulation.RData')
+pload('results.RData')
+str(results)
+length(results)
+names(results)
+st <- results
+save(list=c('st',as.vector(lsf.str()),'call.st'),file='src/simulation26/simulation.RData')
+knit('sst.Rnw')
+q('no')
+library(knitr)
+knit('sst.Rnw')
+q('no')
+library(knitr)
+knit('sst.Rnw')
+q('no')
+bws[windowsT1]
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+panel <- c("A","A","A","A","A","A","B","B","B","B","B","B","B","B","B","B")
+require('ggplot2')
+require('plyr')
+
+panel <- c("A","A","A","A","A","A","B","B","B","B","B","B","B","B","B","B")
+instrument <-c("V1","V2","V1","V1","V1","V2","V1","V1","V2","V1","V1","V2","V1","V1","V2","V1")
+cost <- c(1,4,1.5,1,4,4,1,2,1.5,1,2,1.5,2,1.5,1,2)
+sensitivity <- c(3,5,2,5,5,1,1,2,3,4,3,2,1,3,1,2)
+
+mydata <- data.frame(panel, instrument, cost, sensitivity)
+
+myfunc <- function(cost, sensitivity) {
+  return(cost*sensitivity/sum(cost))
+}
+mydata <- ddply(mydata, .(panel), transform, contrib=myfunc(cost, sensitivity))
+
+ddply(mydata, c("panel"), summarize, wavg=weighted.mean(sensitivity, cost))
+ddply(mydata, c("panel"), summarize, wavg2=sum(contrib))
+dhatDat
+rddDat
+ddply(mydata, "panel", summarize, wavg = sum(contrib))
+dim(dhhDat)
+dim(dhatDat)
+dim(rddDat)
+dat2 <- rbind(rddDat,cbind(rep(NA,12),rep(NA,12),dhatDat$incCovs))
+dat2 <- rbind(rddDat,cbind(bws=rep(NA,12),ps=rep(NA,12),incCovs=dhatDat$incCovs))
+dat2
+dat2 <- rbind(rddDat,cbind(bws=rep(NA,12),ps=rep(NA,12),incCovs=dhatDat$incCovs))
+levels(dhatDat$incCovs)
+levels(rddDat$incCovs)
+d1 <- rddDat
+d1$incCovs <- as.character(d1$incCovs)
+d2 <- dhatDat
+d2$incCovs <- as.character(d2$incCovs)
+d3 <- rbind(d1,cbind(bws=rep(NA,12),ps=rep(NA,12),incCovs=d2$incCovs))
+d3
+d3 <- cbind(d3,value=c(rep(NA,84),d2$value))
+dim(d1)
+d3 <- cbind(d3,value=c(rep(NA,64),d2$value))
+d3 <- cbind(d3,Selector=c(rep(NA,64),d2$Selector))
+d3
+ggplot(d3,aes(bws,ps))+geom_point(size=4)+geom_vline(aes(xintercept=value,color=Selector),show.legend=TRUE)+facet_wrap(~incCovs)
+str(d3)
+d3$ps <- as.numeric(d3$ps)
+ggplot(d3,aes(bws,ps))+geom_point(size=4)+geom_vline(aes(xintercept=value,color=Selector),show.legend=TRUE)+facet_wrap(~incCovs)
+ggplot(d3,aes(bws,ps))+geom_point(size=4)+geom_vline(xintercept=value,color=Selector,show.legend=TRUE)+facet_wrap(~incCovs)
+?geom_vline
+ggplot(d3,aes(bws,ps))+geom_point(size=4)+geom_vline(aes(xintercept=value,color=Selector),data=d3,show.legend=TRUE)+facet_wrap(~incCovs)
+merge(rddDat,dhatDat)
+panel <- c("A","A","A","A","A","A","B","B","B","B","B","B","B","B","B","B")
+instrument <-c("V1","V2","V1","V1","V1","V2","V1","V1","V2","V1","V1","V2","V1","V1","V2","V1")
+cost <- c(1,4,1.5,1,4,4,1,2,1.5,1,2,1.5,2,1.5,1,2)
+sensitivity <- c(3,5,2,5,5,1,1,2,3,4,3,2,1,3,1,2)
+
+mydata <- data.frame(panel, instrument, cost, sensitivity)
+
+mydata
+myfunc <- function(cost, sensitivity) {
+  return(cost*sensitivity/sum(cost))
+}
+mydata <- ddply(mydata, .(panel), transform, contrib=myfunc(cost, sensitivity))
+
+mydata
+ddply(mydata, c("panel"), summarize, wavg=weighted.mean(sensitivity, cost))
+ddply(mydata, c("panel"), summarize, wavg2=sum(contrib))
+
+
+ggplot(mydata, aes(x=sensitivity, weight=contrib)) +
+  geom_bar(binwidth=1) 
+p <- ggplot(mydata, aes(x=sensitivity, weight=contrib)) +
+  geom_bar(binwidth=1) 
+p +facet_wrap(~ panel) +
+  ylab("contrib")
+p+facet_wrap(~panel)+  geom_vline(xintercept=sum(contrib)) 
+ggplot(mydata, aes(x=sensitivity, weight=contrib)) +
+  geom_bar(binwidth=1) +
+  geom_vline(xintercept=sum(contrib)) +
+  facet_wrap(~ panel) +
+  ylab("contrib")
+mydata
+ vlines <- ddply(mydata, .(panel), summarize, sumc = sum(contrib))
+
+vlines
+merge(mydata,vlines)
+merge(rddDat,dhatDat)
+dhatDat
+windowsT1
+c(0,bws)[windowsT1+1]
+=c(multLine(c(0,bws)[windowsT+1],amount=0.005),
+                          multLine(c(0,bws)[windowsT1+1],amount=0.02))
+multLine(c(0,bws)[windowsT1+1])
+multLine
+debug(multLine)
+multLine(c(0,bws)[windowsT1+1])
+d
+dhats
+unique(dhats)
+d
+d
+dhats
+dhats[dhats==d]
+seq(-floor(num/2))
+num
+seq(-floor(num/2))*amount
+seq(-floor(num/2)*amount,by=amount,length=num)
+amount
+Q
+c
+c
+undebug(multline)
+undebug(multLine)
+windowsT
+bws[windowsT]
+tab
+tab
+windowsT
+psT
+bws
+windowsT1
+windowsT1+1
+tab
+tab
+require(xtable)
+max(bws[psT>0.05])
+tab
+psT[1]
+psT1[1]
+psT1[2]
+min(bws[psT1<0.05])
+windowsT1
+ate(0.17)
+ate
+ate(0.17)
+bw=0.17
+mod
+windowsT
+ate(0.16)
+w <- windowsT[1]
+ifelse(w>0,ate(bws[w]),rep(NA,2))
+ates
+ates2
+paste0(round(ates[1,],2),'(',round(ates[2,],3),')')
+knit('sst.Rnw')
+facet
+knit('sst.Rnw')
+knit('sst.Rnw')
+bws
+bws
+q('no')
+knit('sst.Rnw')
+library(knitr)
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+knit('sst.Rnw')
+windowsT1
+windowsT1
+knit('sst.Rnw')
+ls()
+pvalsTS
+qqplot(qunif,pvalsTS[5:20])
+qunif
+qqplot(qunif(ppoints(16)),pvalsTS[5:20])
+qqline(pvalsTS[5:20],distribution=qunif)
+dhatsTS
+dhatsTS
+str(dhatsTS)
+?log
+install.packages('urca')
+plot(y)
+?npext
+npext
+?npext
+max(npext$year)
+new
+pvalsTS
+dhatsTS
+dhatsTSnm
+dhatsTSnm
+names(dhatsTS)
+'[:punct:]'
+dhatsTSnm
+dhatsTSnm
+dhatsTS
+dhatsTSnm
+all.equal(dhatsTSnm[c('alphaB15','dm','dmab','AIC','BIC')])
+var(dhatsTSnm[c('alphaB15','dm','dmab','AIC','BIC')])
+var(dhatsTSnm[c('alphaB15','dm','dmab','AIC','BIC')])==0
+dhatsTSnm
+library(knitr)
+knnit('sst.Rnw')
+knit('sst.Rnw')
+dhatsTSnm[c('alphaU15','dm','dmab','AIC','BIC')]
+length(unique(dhatsTSnm[c('alphaU15','dm','dmab','AIC','BIC')]))
+length(unique(dhatsTSnm[c("alphaU15", "dm", "dmab", "AIC", "BIC")])) == 1
+q('no')

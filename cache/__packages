@@ -1,0 +1,12 @@
+base
+sm
+vioplot
+ggplot2
+knitr
+tikzDevice
+SparseM
+RItools
+foreign
+plyr
+xtable
+urca

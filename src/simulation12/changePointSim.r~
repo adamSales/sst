@@ -1,73 +1,71 @@
 library(vioplot)
 library(parallel)
-cl<-makePSOCKcluster(10)
+cl<-makePSOCKcluster(min(10,detectCores()))
 
+source('src/winSelect.r')
 
-
-
+beta <- 0.1
+ns <- c(10,50,100)
 
 #### simulation 1
 #### one covariate x
-#### r=+/- 1:20
-#### compare x for negative r to positive r within bandwidth bw=1:20
+#### r=+/- 1:30
+#### compare x for negative r to positive r within bandwidth bw=1:30
 #### for r= +/- 1:10 x~N(0,1)
-#### for r= +/- 11:20 x=-10b+br+N(0,1) for varying b
-#### also vary sample size at each point n
+#### for |r|>10 x=-10b+br+N(0,1) for b=beta defined above in code
+#### if curved, for |r|>20 x=20b-br+N(0,1) so that relationship reverses itself at r=20
+#### vary sample size at each point n and whether curved
 #### sst techniques: two factors
 #### first: edge testing, on or off
 #### second: how to choose based on p-values
-#### method 1: biggest p> alpha, alpha=0.05, 0.15, 0.25
-#### method 2: mallik
-#### method 3: ks criterion
+#### method 1: biggest d st p> alpha, alpha=0.05, 0.15, 0.25
+#### method 2: biggest d st p[d]> alpha & p[d+1]<alpha
+#### method 3: mallik
+#### method 4: flexible mallik
 
-r <- seq(-20,20)
 
-makeData <- function(n,beta){
-    x <- vapply(r,function(r) rnorm(n)+ifelse(abs(r)>10,(r-sign(r)*10)*beta,0),numeric(n))
+r <- seq(-30,30)
+r <- r[r!=0] ## zero just confuses things
+bws <- sort(unique(abs(r)))
+
+makeData <- function(n,curved,beta=0.1){
+    if(curved){
+        x <- vapply(r,function(r)
+            rnorm(n)+ifelse(abs(r)>10,
+                            ifelse(abs(r)<21,(r-sign(r)*10)*beta,
+                                   -(r-sign(r)*20)*beta+sign(r)*10*beta),0),numeric(n))
+    } else
+        x <- vapply(r,function(r) rnorm(n)+ifelse(abs(r)>10,(r-sign(r)*10)*beta,0),numeric(n))
     x
 }
 
 test <- function(x,bw,edge=TRUE){
     if(edge)
-        return(wilcox.test(x[,r==bw],x[,r==-bw])$p.value)
-    wilcox.test(x[,r<=bw & r>0],x[,r>= -bw & r<0])$p.value
+        return(t.test(x[,r==bw],x[,r==-bw])$p.value)
+    t.test(x[,r<=bw & r>0],x[,r>= -bw & r<0])$p.value
 }
 
-alphaTest <- function(ps,alpha=c(0.05,0.15,0.25)){
-    bstars <- NULL
-    for(a in alpha)
-        bstars <- c(bstars,seq(2,20)[max(which(ps>a))])
-    names(bstars) <- alpha
-    bstars
-}
-
-mallik <- function(ps){
-    seq(2,20)[which.max(cumsum(ps-1/4))]
-}
-
-ks <- function(ps){
-    cdf <- function(x) x
-    stat <- function(bw){
-        ks.test(ps[1:bw],cdf,alternative='greater')$statistic+
-            ks.test(ps[(bw:1):length(ps)],cdf,alternative='less')$statistic
-    }
-    seq(2,20)[which.min(vapply(2:length(ps),stat,1))]
-}
-
-simOne <- function(n,beta){
-    x <- makeData(n,beta)
-    psEdge <- vapply(2:20,function(bw) test(x=x,bw=bw,edge=TRUE),1)
-    bstar <- c(alphaE=alphaTest(psEdge),mallikE=mallik(psEdge))
-
-    psFull <- vapply(2:20,function(bw) test(x=x,bw=bw,edge=FALSE),1)
-    bstar <- c(bstar,alpha=alphaTest(psFull),mallik=mallik(psFull))
+simOneOne <- function(x,alphas,edge){
+    ps <- vapply(bws,function(bw) test(x=x,bw=bw,edge=edge),1)
+    bstar <- setNames(c(vapply(alphas,function(alph) dhatAlpha(ps,alph),1),
+                            vapply(alphas,function(alph) dhatAlphaBad(ps,alph),1),
+                            mallik=dhatM(ps),mallikFlex=dhatM2(ps)['dhat']),
+                          c(paste0('\\hat{d}^{max}_{',alphas,'}'),
+                            paste0('\\hat{d}^{min}_{',alphas,'}'),
+                            '\\hat{d}_M','\\hat{d}^{flex}_M'))
     bstar
 }
 
-simTot <- function(nsims,ns =c(10,50),betas=c(0.05,0.1,.2)){
+simOne <- function(n,curved,beta=0.1,alphas=c(0.05,0.15,0.25)){
+    x <- makeData(n,curved, beta)
+    list(edge=simOneOne(x=x,alphas=alphas,edge=TRUE),
+         full=simOneOne(x=x,alphas=alphas,edge=FALSE))
+}
+
+simTot <- function(nsims,ns =c(10,50,100),beta=beta){
 
     results <- list()
-    stuff <- c(ls(envir=.GlobalEnv)[vapply(ls(envir=.GlobalEnv), function(obj) class(get(obj))[1],'a')=='function'],'r')
+    stuff <- c(ls(envir=.GlobalEnv)[vapply(ls(envir=.GlobalEnv), function(obj) class(get(obj))[1],'a')=='function'],'r','bws')
     print(stuff)
     clusterExport(cl,stuff)
     for(n in ns) for(beta in betas){

@@ -1,0 +1,26 @@
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rdd-1}
+
+\end{knitrout}
+\caption{P-values from total and edge testing for balance in all seven covariates
+  from the LSO analysis. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues1}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rdd2-1}
+
+\end{knitrout}
+\caption{P-values from total and edge testing for balance in all seven covariates
+  from the LSO analysis. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues2}
+\end{figure}
+\efloatseparator
+ 
