@@ -1,8 +1,82 @@
-@misc{
+@misc{gelmanBlog,
 author = {Gelman, Andrew},
 title = {Type 1, type 2, type S, and type M errors},
 type = {Blog},
 number = {December 29},
 year = {2004},
 howpublished = {\url{http://http://andrewgelman.com/2004/12/29/type_1_type_2_t/}}
+}
+
+@article{modelsWrong,
+  title={Robustness in the strategy of scientific model building},
+  author={Box, George EP},
+  journal={Robustness in statistics},
+  volume={1},
+  pages={201--236},
+  year={1979}
+}
+
+@article{tovar2006academic,
+  title={Academic probation as a dangerous opportunity: Factors influencing diverse college students' success},
+  author={Tovar, Esau and Simon, Merril A},
+  journal={Community College Journal of Research and Practice},
+  volume={30},
+  number={7},
+  pages={547--564},
+  year={2006},
+  publisher={Taylor \& Francis}
+}
+
+
+@Book{urca,
+    title = {Analysis of Integrated and Cointegrated Time Series with R},
+    author = {B. Pfaff},
+    publisher = {Springer},
+    edition = {Second},
+    address = {New York},
+    year = {2008},
+    note = {ISBN 0-387-27960-1},
+    url = {http://www.pfaffikus.de},
+  }
+
+@article{schotman1991bayesian,
+  title={On Bayesian routes to unit roots},
+  author={Schotman, Peter C and Van Dijk, Herman K},
+  journal={Journal of Applied Econometrics},
+  volume={6},
+  number={4},
+  pages={387--401},
+  year={1991},
+  publisher={Wiley Online Library}
+}
+
+@article{akaike1969fitting,
+  title={Fitting autoregressive models for prediction},
+  author={Akaike, Hirotugu},
+  journal={Annals of the institute of Statistical Mathematics},
+  volume={21},
+  number={1},
+  pages={243--247},
+  year={1969},
+  publisher={Springer}
+}
+
+@article{schwarz1978estimating,
+  title={Estimating the dimension of a model},
+  author={Schwarz, Gideon and others},
+  journal={The annals of statistics},
+  volume={6},
+  number={2},
+  pages={461--464},
+  year={1978},
+  publisher={Institute of Mathematical Statistics}
+}
+
+@article{potscher1991effects,
+  title={Effects of model selection on inference},
+  author={P{\"o}tscher, Benedikt M},
+  journal={Econometric Theory},
+  pages={163--185},
+  year={1991},
+  publisher={JSTOR}
 }

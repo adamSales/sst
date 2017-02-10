@@ -1,16 +1,3 @@
-#library(urca)
-#data(npext)
-npext <- read.csv('data/npext.csv')
-y <- npext$unemploy[31:nrow(npext)]
-y2 <- data.frame(Year=1890:1988,unemp=y)
-
-new <- read.csv('data/unemployment2.csv',header=F)
-### new was downloaded 1/25/17 from BLS/CPS: https://www.bls.gov/cps/cpsaat01.xlsx
-
-
-new <- with(new,data.frame(year=V1,unemp=log(V16)))
-y <- c(y,new$unemp[new$year>1988])
-y <- ts(y,start=1890)
 
 lrTest <- function(p,edge=TRUE){
     stopifnot(p<20)
@@ -31,7 +18,7 @@ aics <- vapply(arp,AIC,1)
 bics <- vapply(arp,BIC,1)
 
 npTS <- length(pvalsTS)
-dhatsTS <- c(dhatAll(pvalsTS,backwards=TRUE),AIC=which.min(aics),BIC=which.min(bics))
+dhatsTS <- c(dhatAll(pvalsTS,backwards=TRUE,alphas=c(0.05,0.15)),AIC=which.min(aics),BIC=which.min(bics))
 #dhatsTot <- c(dhatAll(pvalsFull,backwards=TRUE),AIC=which.min(aics),BIC=which.min(bics))
 
 

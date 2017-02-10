@@ -199,10 +199,15 @@ violin3 <- function(run,n,curv){
     st1$method <- factor(st1$method)
 
 
-    p <- ggplot(st1, aes(x=method, y=est,fill=edge)) +
+    p <- ggplot(st1, aes(x=method, y=est,fill=selector)) +
         geom_violin(bw=1,position=position_dodge(.5))+
         geom_boxplot(width=0.1,position=position_dodge(.5))+
         geom_hline(yintercept=10,lty=2)+
-        labs(title=paste('n=',n,curv),x='$\\hat{d}$')
+            labs(title=paste('n=',n,curv),x='$\\hat{d}$')
+    #if(curv!='curved' | n!=50) p <- p+guides(fill=FALSE)
+    #if(curv & n==50) p <- p+guides(fill=TRUE)
     p
 }
+
+
+

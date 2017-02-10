@@ -1,6 +1,14 @@
-functions	dhatAlpha	dhatm	ds
-rdd	weplus	wtplus
-rdd2	weplus	wtplus
-var	
-lsoAnalysis	
-timeSeriesAnalysis	aics	arp	bics	dhatsEdgeTS	lrTest	new	npTS	npext	pvalsTS	y	y2
+lsoAnalysis	ap	ate	ates	ates2	balTestT	balTestT1	balform	bws	psT	psT1	windowsT	windowsT1
+timeSeriesAnalysis	aics	arp	bics	dhatsTS	dhatsTSnm	lrTest	new	npTS	pvalsTS	y	y2
+linearImbalance	
+sinusoidalImbalance	
+rdd	dhatDat	rddDat
+functions	cbbPalette	cols	dhatAlpha	dhatm	ds	facet2	multLine	smoothplot	sumStats
+Winselectfunctions	M2	dhatAll	dhatAlphaBad	dhatM	dhatM2	m2
+examplePlots	modCtrl	modTrt
+simulation	beta	eqLin	eqSin	facet	mats	nsim	aaa	alphaTest	balTestE	balTestE1	call.st	fix	ks	ls	makeData	mallik	multiplot	simOne	simOneOne	simTot	st	summaries	test	violin	violin2	violin3	violinTot
+illlustrateSim	
+linearTable	addtorow	ss	tab	xtab
+rddTab	addtorow	tab	xtab
+tsResults	dhatDat	dhatsTS
+tsTab	orders

@@ -1,6 +1,14 @@
-functions	>=	[[<-	c	cumsum	for	length	list	max	paste0	seq	which.max
-rdd	==	>	abline	as.list	bws	c	do.call	legend	length	names	par	paste0	plot	psE	psT	seq	source	unique	vapply	windowsE	windowsT
-rdd2	==	>	abline	as.list	bws	c	do.call	legend	length	names	par	paste0	plot	psE1	psT1	seq	unique	vapply	windowsE1	windowsT1
-var	library
-lsoAnalysis	source
-timeSeriesAnalysis	source
+lsoAnalysis	!	$	$<-	<	<=	>	abs	c	dhatAll	hsgrade_pct	ifelse	lm	r	read.dta	rep	require	round	sort	source	summary	unique	vapply	wilcox.test	with	xBalance	z	~
+timeSeriesAnalysis	$	<	>	AIC	BIC	F	V1	V16	[[	arima	as.numeric	c	data	data.frame	dhatAll	ifelse	lapply	length	library	log	logLik	npext	nrow	pchisq	read.csv	setNames	stopifnot	ts	vapply	which.min	with
+linearImbalance	facet	st
+sinusoidalImbalance	facet	st
+rdd	<=	~	aes	bws	c	cbbPalette	data.frame	facet_wrap	geom_point	geom_vline	ggplot	labs	length	multLine	names	ps	psT	psT1	rep	scale_colour_manual	Selector	subset	value	windowsT	windowsT1
+functions	!	[[	[[<-	[<-	^	<=	==	>	>=	|	~	$	$<-	abline	aes	apply	as.data.frame	as.numeric	c	cbind	colnames	colors	cumsum	data.frame	do.call	est	facet_wrap	factor	floor	for	geom_boxplot	geom_hline	geom_violin	ggplot	grepl	gsub	if	ifelse	is.finite	is.na	labs	lapply	length	levels	levels<-	list	max	mean	method	names	nrow	numeric	paste	paste0	plot	position_dodge	rbind	rep	return	sd	selector	seq	sort	strsplit	table	unique	vapply	which.max
+Winselectfunctions	source
+examplePlots	<	>=	~	$	abline	ap	c	coef	lines	lm	max	min	par	plot	smoothplot	y
+simulation	[[	==	$	do.call	facet2	lapply	length	load	mean	st	vapply
+illlustrateSim	>	abs	beta	c	curve	ifelse	par	pi	sign	sin	x
+linearTable	$<-	align<-	c	colnames<-	digits<-	do.call	lapply	list	paste0	print	rep	rownames<-	st	sumStats	xtable
+rddTab	$<-	align<-	ates	ates2	bws	c	cbind	list	paste0	print	round	windowsT	windowsT1	xtable
+tsResults	aes	aics	bics	c	data.frame	dhatAll	geom_point	geom_vline	ggplot	labs	length	multLine	names	par	pvalsTS	Selector	value	which.min
+tsTab	as.data.frame	as.integer	dhatsTS	names	names<-	print	rownames<-	xtable

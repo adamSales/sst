@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  27 JAN 2017 14:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  7 FEB 2017 03:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -536,6 +536,7 @@ File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
+Package hyperref Info: Option `colorlinks' set `true' on input line 4319.
 Package hyperref Info: Hyper figures OFF on input line 4443.
 Package hyperref Info: Link nesting OFF on input line 4448.
 Package hyperref Info: Hyper index ON on input line 4451.
@@ -558,7 +559,7 @@ Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
 Package hyperref Info: backreferencing OFF on input line 6310.
-Package hyperref Info: Link coloring OFF on input line 6315.
+Package hyperref Info: Link coloring ON on input line 6313.
 Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
@@ -638,7 +639,7 @@ e
 Preview: Fontsize 12pt
 Preview: PDFoutput 1
 \AtBeginShipoutBox=\box42
-Package hyperref Info: Link coloring OFF on input line 85.
+Package hyperref Info: Link coloring ON on input line 85.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -655,17 +656,17 @@ LaTeX Info: Redefining \nameref on input line 85.
 \@outlinefile=\write5
 \openout5 = `rdd2-1.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 258.
+LaTeX Font Info:    Try loading font information for U+msa on input line 246.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 258.
+LaTeX Font Info:    Try loading font information for U+msb on input line 246.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (43.62pt too wide) in paragraph at lines 538--538
+Overfull \hbox (43.62pt too wide) in paragraph at lines 301--301
 [][] 
  []
 
@@ -673,20 +674,20 @@ Preview: Tightpage 0 0 0 0
 [1{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 Non-PDF special ignored!
 Non-PDF special ignored!]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 540.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 540.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 303.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 303.
  (./rdd2-1.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 540.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 540.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 303.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 303.
 Package rerunfilecheck Info: File `rdd2-1.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 540.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 303.
  ) 
 Here is how much of TeX's memory you used:
- 16644 strings out of 493089
- 308602 string characters out of 6134842
- 403518 words of memory out of 5000000
- 19829 multiletter control sequences out of 15000+600000
+ 16541 strings out of 493089
+ 306507 string characters out of 6134842
+ 374648 words of memory out of 5000000
+ 19726 multiletter control sequences out of 15000+600000
  11054 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,7n,54p,388b,671s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -695,7 +696,7 @@ Here is how much of TeX's memory you used:
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></
 usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></us
 r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb>
-Output written on rdd2-1.pdf (1 page, 56696 bytes).
+Output written on rdd2-1.pdf (1 page, 50674 bytes).
 PDF statistics:
  32 PDF objects out of 1000 (max. 8388607)
  23 compressed objects within 1 object stream
