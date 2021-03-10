@@ -1,5 +1,0 @@
-lsoAnalysis	!	$	$<-	~	<	<=	>	abs	c	dhatAll	hsgrade_pct	ifelse	lm	r	read.dta	rep	require	round	sort	source	summary	unique	vapply	wilcox.test	with	xBalance	z
-timeSeriesAnalysis	$	[[	<	>	AIC	arima	as.numeric	BIC	c	data	data.frame	dhatAll	F	ifelse	lapply	length	library	log	logLik	npext	nrow	pchisq	read.csv	setNames	stopifnot	ts	V1	V16	vapply	which.min	with
-linearImbalance	facet	source	st
-sinusoidalImbalance	facet	st
-rdd	~	<=	aes	bws	c	cbbPalette	data.frame	facet_wrap	geom_point	geom_vline	ggplot	length	multLine	names	ps	psT	psT1	rep	scale_colour_manual	Selector	subset	value	windowsT	windowsT1
