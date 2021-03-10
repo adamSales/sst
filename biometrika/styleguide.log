@@ -1,0 +1,283 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  16 FEB 2017 09:03
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**\input styleguide.tex
+(./styleguide.tex (./biometrika.cls
+Document Class: biometrika 2009/25/05 v1.5 Standard LaTeX document class
+\draftrule=\dimen102
+\trimrule=\dimen103
+(./Biomet-lineno.sty (./lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count79
+\output=\toks14
+\linenoprevgraf=\count80
+\linenumbersep=\dimen104
+\linenumberwidth=\dimen105
+\c@linenumber=\count81
+\c@pagewiselinenumber=\count82
+\c@LN@truepage=\count83
+\c@internallinenumber=\count84
+\c@internallinenumbers=\count85
+\quotelinenumbersep=\dimen106
+\bframerule=\dimen107
+\bframesep=\dimen108
+\bframebox=\box26
+LaTeX Info: Redefining \\ on input line 3056.
+))
+\minute=\count86
+\hour=\count87
+\trimwidth=\dimen109
+\trimheight=\dimen110
+\typewidth=\dimen111
+\typeheight=\dimen112
+\tempdimen=\dimen113
+\normaltextheight=\dimen114
+\normalbaselineskip=\skip41
+\blindfoliodrop=\dimen115
+\enumdim=\dimen116
+\figheight=\dimen117
+\figwidth=\dimen118
+\tabledim=\dimen119
+\tableleftskip=\skip42
+\tablerightskip=\skip43
+\mathindent=\dimen120
+\emathindent=\dimen121
+\bibindent=\dimen122
+\tempbox=\box27
+\aucount=\count88
+\affcount=\count89
+\articlecount=\count90
+\abbrebox=\box28
+\c@part=\count91
+\c@chapter=\count92
+\c@section=\count93
+\c@subsection=\count94
+\topsepi=\skip44
+\topsepii=\skip45
+\topsepiii=\skip46
+\itemsepi=\skip47
+\itemsepii=\skip48
+\itemsepiii=\skip49
+\LabelSep=\dimen123
+\deflistcount=\count95
+\listtextleftmargin=\skip50
+\listtextleftmarginii=\skip51
+\listtextleftmarginiii=\skip52
+\listtextrightmargin=\skip53
+\listlabelleftskip=\skip54
+\listlabelleftskipii=\skip55
+\listlabelleftskipiii=\skip56
+\abovelistskipi=\skip57
+\belowlistskipi=\skip58
+\abovelistskipii=\skip59
+\belowlistskipii=\skip60
+\abovelistskipiii=\skip61
+\belowlistskipiii=\skip62
+\labelsepi=\skip63
+\labelsepii=\skip64
+\labelsepiii=\skip65
+\enumdimwd=\dimen124
+\unnumlistindent=\dimen125
+\itemleftmargin=\dimen126
+\itemlabelsep=\dimen127
+\c@ncount=\count96
+\abovecaptionskip=\skip66
+\belowcaptionskip=\skip67
+\c@figure=\count97
+\tempadimen=\dimen128
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/epsf/epsf.sty
+This is `epsf.tex' v2.7.4 <14 February 2011>
+\epsffilein=\read1
+\epsfframemargin=\dimen129
+\epsfframethickness=\dimen130
+\epsfrsize=\dimen131
+\epsftmp=\dimen132
+\epsftsize=\dimen133
+\epsfxsize=\dimen134
+\epsfysize=\dimen135
+\pspoints=\dimen136
+)
+\figtempbox=\box29
+\c@table=\count98
+\@footmax=\dimen137
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 1292.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 1292.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 1292.
+\bibindent=\dimen138
+\bibleftmargin=\dimen139
+\bibitemsep=\dimen140
+\bibparsep=\dimen141
+\bibtext=\dimen142
+\biblabelsep=\dimen143
+\bibleftmargini=\dimen144
+\linecount=\count99
+\tempcount=\count100
+ (./ntheorem.sty
+Style `ntheorem', Version 1.24 <2004/09/20>
+Package: ntheorem 2004/09/20 1.24
+\theorem@style=\toks15
+\theorem@@style=\toks16
+\theorembodyfont=\toks17
+\theoremnumbering=\toks18
+\theorempreskipamount=\skip68
+\theorempostskipamount=\skip69
+\theoremindent=\dimen145
+\theorem@indent=\dimen146
+\theoremheaderfont=\toks19
+\theoremseparator=\toks20
+\theoremprework=\toks21
+\theorempostwork=\toks22
+\theoremsymbol=\toks23
+\qedsymbol=\toks24
+\theoremkeyword=\toks25
+\qedsymbol=\toks26
+\thm@topsepadd=\skip70
+Package ntheorem Info: Option `thmmarks' loaded on input line 1029.
+\c@endNonectr=\count101
+\c@currNonectr=\count102
+\mysavskip=\skip71
+)
+\c@currtheoremctr=\count103
+\c@endtheoremctr=\count104
+\c@theorem=\count105
+\c@currlemmactr=\count106
+\c@endlemmactr=\count107
+\c@lemma=\count108
+\c@currcorollaryctr=\count109
+\c@endcorollaryctr=\count110
+\c@corollary=\count111
+\c@currpropositionctr=\count112
+\c@endpropositionctr=\count113
+\c@proposition=\count114
+\c@currdefinitionctr=\count115
+\c@enddefinitionctr=\count116
+\c@definition=\count117
+\c@currassumptionctr=\count118
+\c@endassumptionctr=\count119
+\c@assumption=\count120
+\c@currremarkctr=\count121
+\c@endremarkctr=\count122
+\c@remark=\count123
+\c@currstepctr=\count124
+\c@endstepctr=\count125
+\c@step=\count126
+\c@currconditionctr=\count127
+\c@endconditionctr=\count128
+\c@condition=\count129
+\c@currpropertyctr=\count130
+\c@endpropertyctr=\count131
+\c@property=\count132
+\c@currrestrictionctr=\count133
+\c@endrestrictionctr=\count134
+\c@restriction=\count135
+\c@currexamplectr=\count136
+\c@endexamplectr=\count137
+\c@example=\count138
+\c@curralgoctr=\count139
+\c@endalgoctr=\count140
+\c@algo=\count141
+\c@currproofctr=\count142
+\c@endproofctr=\count143
+\c@proof=\count144
+ (/usr/local/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip72
+\bibsep=\skip73
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count145
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2013/01/14 v2.14 AMS math features
+\@mathmargin=\skip74
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks27
+\ex@=\dimen147
+)
+LaTeX Info: Redefining \text on input line 39.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen148
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count146
+LaTeX Info: Redefining \frac on input line 210.
+\uproot@=\count147
+\leftroot@=\count148
+LaTeX Info: Redefining \overline on input line 306.
+\classnum@=\count149
+\DOTSCASE@=\count150
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
+\Mathstrutbox@=\box30
+\strutbox@=\box31
+\big@size=\dimen149
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
+\macc@depth=\count151
+\c@MaxMatrixCols=\count152
+\dotsspace@=\muskip10
+\c@parentequation=\count153
+\dspbrk@lvl=\count154
+\tag@help=\toks28
+\row@=\count155
+\column@=\count156
+\maxfields@=\count157
+\andhelp@=\toks29
+\eqnshift@=\dimen150
+\alignsep@=\dimen151
+\tagshift@=\dimen152
+\tagwidth@=\dimen153
+\totwidth@=\dimen154
+\lineht@=\dimen155
+\@envbody=\toks30
+\multlinegap=\skip75
+\multlinetaggap=\skip76
+\mathdisplay@stack=\toks31
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2014/10/28 v1.1c Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup4
+\symboldletters=\mathgroup5
+\symboldsymbols=\mathgroup6
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 207.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+Package: algorithm2e 2013/01/06 v5.00 algorithms environments
+\c@AlgoLine=\count158
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/tools/xspace.sty
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/relsize/relsize.sty
+Package: relsize 2013/03/29 ver 4.1
+)
+********************************************************
+Package `algorithm2e' Release 5.0 -- january 06 2013 --
+- algorithm2e-announce@lirmm.fr mailing list for announcement about releases
+- algorithm2e-discussion@lirmm.fr mailing list for discussion about package
+subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
+- Author: Christophe Fiorio (cfiorio@

@@ -1,6 +1,5 @@
 base
 sm
-vioplot
 ggplot2
 knitr
 tikzDevice
@@ -10,3 +9,4 @@ foreign
 plyr
 xtable
 urca
+vioplot

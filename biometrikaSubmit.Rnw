@@ -1,0 +1,1298 @@
+%\documentclass[manuscript]{biometrika}
+\documentclass[lineno]{biometrika}
+
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+
+
+%% Please use the following statements for
+%% managing the text and math fonts for your papers:
+%\usepackage{times}
+%\usepackage[cmbold]{mathtime}
+%\usepackage{bm}
+\usepackage{natbib}
+
+%\usepackage[plain,noend]{algorithm2e}
+
+\makeatletter
+\renewcommand{\algocf@captiontext}[2]{#1\algocf@typo. \AlCapFnt{}#2} % text of caption
+\renewcommand{\AlTitleFnt}[1]{#1\unskip}% default definition
+\def\@algocf@capt@plain{top}
+\renewcommand{\algocf@makecaption}[2]{%
+  \addtolength{\hsize}{\algomargin}%
+  \sbox\@tempboxa{\algocf@captiontext{#1}{#2}}%
+  \ifdim\wd\@tempboxa >\hsize%     % if caption is longer than a line
+    \hskip .5\algomargin%
+    \parbox[t]{\hsize}{\algocf@captiontext{#1}{#2}}% then caption is not centered
+  \else%
+    \global\@minipagefalse%
+    \hbox to\hsize{\box\@tempboxa}% else caption is centered
+  \fi%
+  \addtolength{\hsize}{-\algomargin}%
+}
+\makeatother
+
+%%% User-defined macros should be placed here, but keep them to a minimum.
+\def\Bka{{\it Biometrika}}
+\def\AIC{\textsc{aic}}
+\def\T{{ \mathrm{\scriptscriptstyle T} }}
+\def\v{{\varepsilon}}
+
+
+\newcommand{\dalphaU}{\bar{d}_\alpha}
+\newcommand{\dalphaB}{\underline{d}_\alpha}
+\newcommand{\dstar}{d^*}
+\newcommand{\ps}{\bm{p}_D}
+\newcommand{\dhat}{\hat{d}}
+\newcommand{\dhatU}{\bar{d}}
+\newcommand{\dhatB}{\underline{d}}
+\newcommand{\dhatm}{\hat{d}_M}
+\newcommand{\dhatmab}{\hat{d}^{ab}_M}
+\newcommand{\EE}{E}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{ce}{Counter-Example}
+%\newtheorem{ass}{Assumption}
+\newtheorem{alg}{Algorithm}
+%\newtheorem*{ass*}{Assumption}
+\newtheorem{prop}{Proposition}
+
+
+\newenvironment{ass}[2][Assumption:]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries
+    #2}.]}{\end{trivlist}}
+
+\defcitealias{bls}{BLS}
+
+
+<<include=FALSE>>=
+require(ggplot2)
+library(knitr)
+library(tikzDevice)
+library(xtable)
+opts_chunk$set(
+echo=FALSE, results='asis',cache=TRUE,warning=FALSE,error=FALSE,dev='tikz',message=FALSE,autodep = TRUE
+    )
+
+options(tikzDefaultEngine = "pdftex")
+
+
+
+@
+
+<<functions>>=
+
+
+
+dhatm <- function(ps){
+    M <- cumsum(ps-1/4)
+    which.max(M)
+}
+
+dhatAlpha <- function(ps,alpha){
+    D <- length(ps)
+    max(seq(D)[ps>=alpha],na.rm=TRUE)
+}
+
+ds <- function(ps,alphas=c(0.05,0.15,0.25)){
+    dhat <- list()
+    for(a in alphas){
+        dhat[[paste0('alpha',a)]] <- dhatAlpha(ps,a)
+    }
+    dhat[['Mallik']] <- dhatm(ps)
+    dhat
+}
+
+
+multLine <- function(dhats,amount=0.1){
+    ttt <- table(dhats)
+    if(max(ttt)==1) return(dhats)
+    for(d in unique(dhats)){
+        num <- ttt[paste(d)]
+        if(num>1)
+            dhats[dhats==d] <- dhats[dhats==d]+seq(-floor(num/2)*amount,by=amount,length=num)
+    }
+    dhats
+}
+
+cols <- colors()[c(red=552,lightblue=636,mag=642,green=255,orange=499,black=153,purple=469,darkblue=477)]
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+smoothplot <- function(x,y,...){
+
+
+    naFlag <- is.na(x) | is.na(y)
+    x <- x[!naFlag]
+    y <- y[!naFlag]
+
+
+    tmp <- vapply(unique(x), function(xval) c(
+        av=mean(y[x==xval],na.rm=TRUE),
+        sizes = length(y[x==xval])
+        ),numeric(2))
+
+    tmp['sizes',] <- 2*tmp['sizes',]/max(tmp['sizes',])
+    plot(unique(x),tmp['av',],cex=tmp['sizes',],...)
+    abline(v=0,lty='dotted')
+
+
+}
+
+
+facet2 <- function(st,curv){
+    ns <- sort(unique(vapply(strsplit(names(st),'_'),function(x) as.numeric(x[2]),1)))
+    dat <- NULL
+    cname <- ifelse(curv,'curved','mono')
+    for(n in ns){
+
+        run <- do.call('rbind',lapply(st[[paste0(cname,'_',n)]],function(x) x$full))
+        st1 <- do.call('c',as.data.frame(run))
+        st1 <- data.frame(est=st1,method=rep(colnames(run),each=nrow(run)))
+        st1$selector <- ifelse(grepl('max',st1$method),'$\\bar{d}_\\alpha$',
+                               ifelse(grepl('min',st1$method),'$\\underline{d}_\\alpha$','$\\hat{d}_M$'))
+        st1$method <- gsub('\\\\\\hat\\{d\\}\\^\\{m[axin]*\\}_\\{','$\\\\\\alpha=',st1$method)
+        st1$method <- gsub('\\}','$',st1$method)
+        st1$method <- gsub('\\\\\\hat\\{d\\$\\^\\{flex\\$_M','a,b',st1$method)
+        st1$method <- gsub('\\\\\\hat\\{d\\$_M','0.5,1',st1$method)
+
+        st1$method <- factor(st1$method)
+        st1$n <- n
+
+        dat <- rbind(dat,st1)
+    }
+
+    dat$n <- factor(dat$n)
+    levels(dat$n)=paste0('n=',levels(dat$n))
+
+    p <- ggplot(dat, aes(x=selector, y=est,fill=method)) +
+        geom_violin(bw=1,position=position_dodge(.5))+
+        geom_boxplot(width=0.1,position=position_dodge(.5))+
+        geom_hline(yintercept=10,lty=2)+
+            labs(title=paste('Imbalance:',ifelse(curv,'Sinusoidal','Linear')),y='$\\hat{d}$',x='')+
+                facet_wrap(~ n,ncol=3)
+    p
+}
+
+sumStats <- function(st){
+    plotlist <- list()
+    for(curv in c('mono','curved'))
+        for(n in c(10,50,100)){
+            run <- do.call('rbind',lapply(st[[paste0(curv,'_',n)]],function(x) x$full))
+            plotlist[[paste0(curv,n)]] <- cbind(
+                lessThan3=apply(run,2,function(x) mean(x[is.finite(x)]<=3,na.rm=TRUE)),
+                moreThan13=apply(run,2,function(x) mean(x[is.finite(x)]>13,na.rm=TRUE)),
+                avg=apply(run,2,function(x) mean(x[is.finite(x)],na.rm=TRUE)),
+                mse=apply(run,2,function(x) mean((x[is.finite(x)]-10)^2,na.rm=TRUE)),
+                sd=apply(run,2,function(x) sd(x[is.finite(x)],na.rm=TRUE)))
+
+        }
+    plotlist
+}
+
+@
+
+<<Winselectfunctions>>=
+source('src/winSelect.r')
+
+@
+
+<<lsoAnalysis,cache=TRUE>>=
+require(RItools)
+require(foreign)
+source('src/winSelect.r')
+ap <- read.dta('data/AEJApp2008-0202_data/data_for_analysis.dta')
+#### downloaded 1/2/17 from https://www.aeaweb.org/aej/app/data/2008-0202_data.zip
+
+ap$r <- round(ap$dist_from_cut,2)
+ap <- ap[abs(ap$r)<=0.5,]
+ap$r <- round(ap$r+0.005,3)
+
+ap$z <- ap$r<0
+
+bws <- sort(unique(abs(ap$r)))
+
+balform <- z~hsgrade_pct+age_at_entry+totcredits_year1+male+loc_campus1+loc_campus2+english+
+    bpl_north_america
+
+balTestT <- function(bw){
+    xBalance(balform,data=ap[abs(ap$r)<=bw,], report='chisquare.test')$overall$p.value[1]
+}
+
+psT <- vapply(bws,balTestT,1)
+windowsT <- dhatAll(psT,alphas=c(0.05,0.15))
+
+balTestT1 <- function(bw){
+    datbw <- ap[abs(ap$r)<=bw,]
+    with(datbw,wilcox.test(hsgrade_pct[z],hsgrade_pct[!z]))$p.value
+}
+
+psT1 <- vapply(bws,balTestT1,1)
+windowsT1 <- dhatAll(psT1,alphas=c(0.05,0.15))
+
+ate <- function(bw){
+    mod <- lm(nextGPA~z,subset=abs(r)<=bw+0.005,data=ap)
+    summary(mod)$coef['zTRUE',1:2]
+}
+
+ates <- vapply(windowsT,function(w) ifelse(rep(w>0,2),ate(bws[w]),rep(NA,2)),c(0.1,0.2))
+ates2 <- vapply(windowsT1,function(w) ifelse(rep(w>0,2),ate(bws[w]),rep(NA,2)),c(0.1,0.2))
+
+
+
+@
+<<timeSeriesAnalysis,cache=TRUE>>=
+
+library(urca)
+data(npext)
+#npext <- read.csv('data/npext.csv')
+y <- npext$unemploy[31:nrow(npext)]
+y2 <- data.frame(Year=1890:1988,unemp=y)
+
+new <- read.csv('data/unemployment2.csv',header=F)
+### new was downloaded 1/25/17 from BLS/CPS: https://www.bls.gov/cps/cpsaat01.xlsx
+
+
+new <- with(new,data.frame(year=V1,unemp=log(V16)))
+y <- c(y,new$unemp[new$year>1988])
+y <- ts(y,start=1890)
+
+lrTest <- function(p,edge=TRUE){
+    stopifnot(p<20)
+    p <- p+1
+    big <- ifelse(edge,p+1,21)
+    llBig <- logLik(arp[[big]])
+    llSmall <- logLik(arp[[p]])
+    lrtest <- as.numeric(2*(llBig-llSmall))
+    pchisq(lrtest , df = 1, lower.tail = FALSE)
+}
+
+
+arp <- lapply(0:20,function(p) arima(y,order=c(p,0,0)))
+pvalsTS <- vapply(0:19,lrTest,1)
+                                        #pvalsFull <- vapply(0:19,lrTest,1,edge=FALSE)
+
+aics <- vapply(arp,AIC,1)
+bics <- vapply(arp,BIC,1)
+
+npTS <- length(pvalsTS)
+dhatsTS <- c(dhatAll(pvalsTS,backwards=TRUE,alphas=c(0.05,0.15)),AIC=which.min(aics),BIC=which.min(bics))
+
+dhatsTSnm <- setNames(dhatsTS,c('alphaU05','alphaU15','alphaB05','alphaB15','dm','dmab','AIC','BIC'))
+
+
+#source('src/timeSeries2.r')
+@
+
+\begin{document}
+
+\jname{Biometrika}
+% %% The year, volume, and number are determined on publication
+% \jyear{2016}
+% \jvol{103}
+% \jnum{1}
+%% The \doi{...} and \accessdate commands are used by the production team
+%\doi{10.1093/biomet/asm023}
+\accessdate{[Submitted]}%Advance Access publication on 31 July 2016}
+
+%% These dates are usually set by the production team
+%\received{April 2012}
+%\revised{October 2015}
+
+%% The left and right page headers are defined here:
+\markboth{A. C. Sales}{Sequential Specification Tests}
+
+%% Here are the title, author names and addresses
+\title{Sequential Specification Tests to Choose a Model: A Change-Point Approach}
+
+\author{A. C. Sales}
+\affil{College of Education, University of Texas at Austin,536C George I. S\'{a}nchez Building
+Austin, Texas, U.S.A}
+
+\maketitle
+
+\begin{abstract}
+Researchers faced with a sequence of candidate model specifications must often choose the best specification that does not violate a testable identification assumption. One option in this scenario is sequential specification tests (SSTs): hypothesis tests of the identification assumption over the sequence. Borrowing an idea from the change-point literature, this paper shows how to use the distribution of p-values from sequential specification tests to estimate the point in the sequence where the identification assumption ceases to hold. Unlike current approaches, this method is robust to individual errant p-values and does not require choosing a test level or tuning parameter. This paper demonstrates the method's properties with a simulation study, and illustrates it by application to the problems of choosing a bandwidth in a regression discontinuity design while maintaining covariate balance and of choosing a lag order for a time series model.
+
+\end{abstract}
+
+\begin{keywords}
+Address; Appendix; Figure; Length; Reference; Style; Summary; Table.
+\end{keywords}
+
+
+\section{Introduction}
+
+One of many mis-matches between best practices recommended by
+statisticians and practice in quantitative research regards model
+selection.
+Statisticians conceptualize model selection as a tradeoff between bias
+and variance.
+Many quantitative researchers adopt a different outlook, thinking about model selection as choosing
+the best model that satisfies the assumptions of their intended
+statistical test or estimator.
+The goal is to minimize variance while
+constraining bias at zero.
+This latter outlook leads researchers towards hypothesis tests of
+model assumptions; in particular, ``sequential specification tests'' (SSTs): a sequence of hypothesis tests, for
+a sequence of models, ordered by preferability.
+The best model whose assumptions ``pass'' a hypothesis test is chosen.
+
+Do hypothesis tests make any sense in model selection?
+For one, ``all models are wrong''
+\citep[p. 2]{modelsWrong} and ``there's no such thing as unbiased
+estimation'' \citep{gelmanBlogUnbiased}, so the search for a correct
+model might be hopeless, and therefore pointless.
+Further, the logic of null-hypothesis testing seems incompatible
+with this framework.
+The results of a null hypothesis test, of course, are never evidence
+in favor of a null hypothesis; null hypotheses can only be rejected,
+not accepted.
+
+On the other hand, ``some models are useful,'' and depending on their
+intended use, their usefulness may depend on approximate
+correctness.
+If so, hypothesis tests may have a role to play.
+Specification tests already exist for most common models, and
+they are regularly taught in introductory quantitative methods
+classes.
+If their use in model selection could be made conceptually sound, they
+are likely to be actually used.
+
+\begin{figure}
+<<examplePlots,fig.width=6,fig.height=4,dev='pdf'>>=
+
+par(mfrow=c(1,2))
+smoothplot(ap$dist_from_cut,ap$nextGPA,xlab='First-Year GPA\n(centered at cutoff)',ylab='Avg Subsequent GPA',sub='(A)')
+modTrt <- lm(nextGPA~dist_from_cut,data=ap[ap$dist_from_cut<0,])
+modCtrl <- lm(nextGPA~dist_from_cut,data=ap[ap$dist_from_cut>=0,])
+lines(x=c(0,min(ap$dist_from_cut)),y=c(coef(modTrt)[1],coef(modTrt)[1]+coef(modTrt)[2]*min(ap$dist_from_cut)),
+          xlim=c(min(ap$dist_from_cut),0),col='red')
+lines(x=c(0,max(ap$dist_from_cut)),y=c(coef(modCtrl)[1],coef(modCtrl)[1]+coef(modCtrl)[2]*max(ap$dist_from_cut)),
+          xlim=c(0,max(ap$dist_from_cut)),col='blue')
+abline(v=0,lty='dotted')
+
+plot(y,xlab='Year',ylab='Log Unemployment Rate',sub='(B)')
+
+@
+\caption{Two data examples for sequential specification tests. Plot (A) shows data from
+  \citet{lso}: subsequent grade point averages (GPAs) for students
+  at a large Canadian university, as a function of first-year
+  GPAs. Subsequent GPAs are averaged by first-year GPAs, which are
+  centered at the academic probation cutoff (dotted line), and the sizes
+  of the plotted points are proportional to the number of students
+  with each first-year GPA. The red and blue lines are linear least-squares
+  fits on either side of the cutoff. Students with first-year GPAs
+  to the left of  the cutoff are put on probation. Plot (B) shows a
+  time-series of log annual United States total unemployment from 1890 to
+  2015. Data were combined from \citet{urca} and \citet{cps}.}
+\label{fig:example}
+\end{figure}
+%%% NOTE: schotman & van dijk used AR(4) for unemployment
+
+
+For example, take the datasets displayed in Figure \ref{fig:example},
+which will be discussed in more detail in Section \ref{sec:examples}.
+Figure \ref{fig:example}A plots data that \citet{lso} used to estimate the effect of academic
+probation.
+Students at an unnamed large Canadian University were put on academic
+probation if their first-year cumulative grade point averages
+(GPAs) fell below a cutoff.
+This is an example of a regression discontinuity design \citep{thistlewhiteCampbell}, in
+which treatment (in this case academic probation) is assigned if a
+numeric ``running variable'' $R$ (first-year GPA) falls below (or above) a
+pre-specified cutoff $c$.
+Typically \citep[e.g.][]{imbensLemiuxRDD,angristLavy,lee} analysts
+will fit regression models $Y=f_1(R)+\epsilon$ and $Y=f_2(R)+\epsilon$
+to data on either side of the cutoff, modeling the relationship
+between $R$ and an outcome of interest $Y$.
+A simpler alternative approach, suggested in \citet{cft}, models $Y$ in a small bandwidth around $c$ as
+independent of $R$ and other covariates.
+This approach treats the data as if they were generated by a randomized
+experiment.
+\citet{cft} suggest choosing the bandwidth via sequential
+specification tests: for a sequence of
+nested windows around $c$, test whether, for subjects with $R$ in the window,
+covariates are independent of treatment assignment.
+Then, choose the largest bandwidth for which the indepence assumption
+cannot be reject at a pre-specified level.
+
+Figure \ref{fig:example}B shows the annual total unemployment rate in the
+United States from 1890 to 2015.
+One of the simpler models for time series such as these is an order
+$p$ autoregression, or $AR(p)$ under which the value of the time
+series at point $t$ may depend on its historical values at
+$t-1,...,t-p$ but, conditional on those, is independent of values at
+points before $t-p$.
+sequential specification tests can be useful here, too: researchers may test model fit for a
+sequence of lag orders $p$, and choose the smallest $p$ that the tests
+fail to reject.
+Here a smaller lag orders $p$ are preferable since they lead to more
+parsimonious models and more precise estimates.
+
+This paper will show how to re-analyze these datasets, and those like
+them, by borrowing a clever idea from change-point or threshold
+estimation.
+\citet{mallik} points out that in a process with a change point,
+the p-values from a sequence of tests of a null regression function
+are uniformly-distributed as long as the regression function is
+correct, but asymptotically zero when the function is not correct.
+They use this dichotomous behavior to construct a simple, consistent
+estimator of the change-point, that is, the point at which the null model
+stops being correct.
+
+In the same way, their estimator can choose the change-point in
+a sequence of models, when models stop being correct.
+In doing so, it shifts the model selection rationale away
+from the logic of hypothesis testing and towards the logic of
+estimation.
+In the tradition of constructing confidence intervals from hypothesis
+tests and \citet{hodgeslehmann}, their estimator exploits
+the behavior of hypothesis tests to estimate quantities of interest.
+Further, as opposed to model selectors based on strict
+hypothesis-testing logic, an individual test result will itself not
+drive the change-point estimator, which is instead based on the entire
+sequence of p-values.
+Thus, the change-point view of model selection is arguably conceptually
+more satisfying and practically more reliable than the conventional
+test-based approach.
+What's more, unlike other SST model selectors, the change-point
+approach does not require the researcher to specify a level $\alpha$
+or any other tuning parameter.
+
+
+\section{The Setup, in General}\label{sec:setup}
+\subsection{Sequences of Models and Tests}
+Say, in specifying a model, a researcher must choose from a discrete,
+ordered, set of specifications $d=1,2,\dots,D$.
+The resulting model must satisfy testable assumption $\mathcal{A}$.
+Assume that either $\mathcal{A}$ is false for all $d$, or that for
+some $1\le \dstar\le D$, $\mathcal{A}$ is true for $d\le \dstar$ and false
+for all $d>\dstar$.
+Further assume that if $\dstar$ exists, it is the optimal choice; for
+instance, it is the smallest model, or the biggest dataset, that satisfies
+$\mathcal{A}$.
+Finally, assume the researcher has chosen a valid, unbiased test of
+$\mathcal{A}$ and calculated p-values for each $d$:
+$\bm{p}_D=p_1,\dots,p_d,\dots,p_D$.
+The procedure here is to use $\bm{p}_D$ to choose a specification
+$\hat{d}$ that is as large as possible without violating
+$\mathcal{A}$.
+
+
+A common choice for $d$ in this scenario relies on the logic of null
+hypothesis testing: for a pre-specified $\alpha \in (0,1)$, let
+\begin{equation*}
+\dalphaU \equiv max\{d : p_d>\alpha\}.
+\end{equation*}
+That is, $\dalphaU$ is the largest value of $d$ for which the
+null hypothesis that $\mathcal{A}$ is true for $d\le \dalphaU$
+cannot be rejected at level $\alpha$.
+Although it may seem as though the multiplicity of tests involved in
+this procedure invalidates the null hypothesis framework, it turns out
+that this is not the case: the ``stepwise intersection-union
+principle'' \citet{berger1988, rosenbaum2008,hansen2015} insures that the
+family-wise error rate is maintained.
+That is, the probability of falsely rejecting the null and choosing
+$\dalphaU<\dstar$, is bounded by $\alpha$.
+$\dalphaU$ is the specification that would result from testing null
+hypotheses backwards: for $d'=D,D-1,\dots,d,\dots,1$, test $H_{0d'}:$
+$\mathcal{A}$ is true for $d\le d'$.
+Then, stop testing at $d'=\dalphaU -1$, the first $d'$ for which
+$p_{d'} \ge \alpha$; reject all null hypotheses $H_{0d'}$ for which
+$d'\ge \dalphaU$, and fail to reject the rest.
+This protects the family-wise error rate of $\alpha$ since rejecting
+any true null implies rejecting the first true null, a
+probability $\alpha$ event.
+
+Another common choice for $\hat{d}$  \citep[e.g.][]{lutkepohl2005new}, say $\dalphaB$,
+does not have this property.
+Let
+\begin{equation*}
+\dalphaB\equiv min\{d: p_d<\alpha\}-1
+\end{equation*}
+$\dalphaB$ selects $\hat{d}$ to be the largest value of $d$ before the first
+significant p-value.
+This is equivalent to the opposite procedure as $\dalphaU$: start with the $d'=1$
+and test sequentially for larger values of $d'$ until the first
+rejection, at $\dalphaB$, then stop; reject all null
+hypotheses $H_{0d'}$ for $d'\ge \dalphaB$ and fail to
+reject the rest.
+This procedure does not control family-wise error rates, so it is likely
+to reject more than $100\alpha$\% valid specifications.
+
+
+\subsection{Model Selection and the Logic of Null Hypothesis Testing}
+In order to avoid certain methodological mistakes, it may be helpful to
+clarify some of the conceptual distinctions between sequential specification tests and
+conventional null hypothesis tests.
+The logic of null hypothesis tests is familiar to anyone who has taken (and understood)
+even the most basic college statistics course; nonetheless we restate
+it here to distinguish it from the logic of sequential specification tests.
+Typically, researchers use hypothesis tests to reject a null hypothesis that they
+consider uninteresting, such as a model parameter equal to zero, and
+interpret rejection as evidence in favor of an
+interesting alternative hypothesis.
+Null hypothesis tests cap the probability of a type-I error, and, given that constraint, seek to minimize the
+probability of a type-II error.
+
+sequential specification tests reverse some of these elements; most importantly, the goal of
+sequential specification tests is to identify specifications in which an assumption
+$\mathcal{A}$ is plausible, rather than to identify true alternative
+hypothesis.
+In the same vein, type-II errors are typically of more concern for
+sequential specification tests than for typical NHTs, and type-I errors are less problematic.
+In fact, a type-II error from a specification test could lead a
+researcher to fit a misspecified model, which in turn may inflate the
+probability of a type-I error in her final outcome analysis.
+For that reason, some methodologists recommend setting $\alpha$
+substantially higher for specification tests than for NHTs in outcome
+analyses.
+Still, the hypothesis testing framework, in the case of point null
+hypotheses, does not allow a researcher to
+fix the type-II error rate at a pre-specified value, and then optimize
+the type-I error rate, though that might be ideal for
+specification tests.
+
+In fact, in continuous data models with continuous parameter spaces,
+no hypothesis test can provide any evidence in favor of a point null
+hypothesis.
+For instance, take the common $H_0: \theta=0$, for some parameter
+$\theta\in \mathbb{R}$.
+In finite samples, for any type-I or type-II error rate, there will
+always be some plausible alternative hypothesis $H_a
+\theta=\epsilon\ne 0$.
+Further, in these situations, finite sample estimates $\hat{\theta}$
+will almost surely be non-zero.
+This is important to state to avoid misinterpretations of SST
+procedures as providing evidence, or showing, that an assumption
+$\mathcal{A}$ is true for certain specifications $d$.
+A common Bayesian argument (e.g. \citealp[][p. 439]{kadanePrinciples};
+\citealp{gelmanBlog}) states that, theoretically, nearly all null
+hypotheses are false anyway, so testing them makes little sense.
+In the case of specification tests, that means that an assumption
+$\mathcal{A}$ can be assumed to be false for all $d$ without even
+conducting a test; in other words, ``all models are wrong''
+\citep[p. 2]{modelsWrong}.
+
+``But some are useful.''
+In practice there is much to be gained by considering assumptions such
+as $\mathcal{A}$.
+In this framework, it may indeed make sense to identify a set of
+specifications $d$ for which $\mathcal{A}$ is plausible, or
+approximately true, and
+sequential specification tests can be useful in this regard, as long as they are understood
+correctly, and not as providing evidence for $\mathcal{A}$.
+
+In many scenarios the choice of $d$ involves a bias-variance tradeoff:
+if $d>\dstar$, then $\mathcal{A}$ is false and the resulting analysis
+will be biased.
+On the other hand, a sub-optimal choice for $d$ often means a
+high-variance estimate.
+For instance, in the regression discontinuity bandwidth case, choosing $d>\dstar$ might mean
+fitting a misspecified model to $Y$ and $R$, but choosing $d<<\dstar$
+means discarding data that can boost precision.
+Rather than choosing a criterion, such as mean-squared-error, that
+balances bias and variance, the SST approach may be seen as an attempt to hold
+bias at approximately zero, and minimize variance under that
+constraint.
+Granted, this is an overly-optimistic take on model fitting;
+still, sequential specification tests hope to constrain bias to be approximately zero, and from there
+minimize variance.
+
+
+\subsection{More Reservations with Null Hypothesis Testing for Model
+  Selection}
+
+Applying a strict hypothesis-testing framework to sequential specification tests for model
+selection has some additional drawbacks.
+First, it requires researchers to choose a test-level $\alpha$. While
+using tuning parameters to mediate the bias-variance tradeoff is not
+uncommon in statistics, the level $\alpha$ is a particularly hard
+parameter to choose.
+
+\citet{granger} poses an additional problem with the use of
+hypothesis tests to choose a model: the need to specify a null
+hypothesis. In their words (p. 179),
+\begin{quote}
+Whenever a hypothesis test is used to choose between two models, one
+model must be selected as a null hypothesis. In most instances, this
+is usually the more parsimonious model and typically a nested test is
+applied. Often it is difficult to distinguish between the two models
+because of data quality (multicollinearity, near-identification, or
+the models being very similar such as in testing for integration). In
+such cases, the model chosen to be the null hypothesis is unfairly
+favored.
+\end{quote}
+In other words, because of the structure of null hypothesis tests,
+which constrain the type-I error rate, the null model is unfairly
+favored.
+In our terminology, $\hat{d}$ is likely to be too small, perhaps $\EE
+(\hat{d})<\dstar$.
+However, such a bias (if it indeed exists) needn't doom sequential specification tests; an
+underestimated $\hat{d}$ is merely sub-optimal. In our setup, choosing
+$\hat{d}$ to be too low will yield and inefficient, but still valid,
+model.
+Would that every statistical model were valid yet suboptimal!
+
+More broadly, perhaps, one might argue that null hypothesis tests are
+design to rule out hypotheses that are inconsistent with the data, not
+to estimate parameters.
+However, as \citet{hodgeslehmann} showed, these aims are not
+contradictory, since tests that rule out implausible hypothesis may also
+point researchers towards the correct answer.
+
+Moving from rejecting implausible specifications to estimating optimal
+specifications requires a theory, or at least a reasonable heuristic.
+The following section will suggest one.
+
+\section{Finding the Change-Point}\label{sec:change-point}
+\subsection{The Change Point Estimator}
+In the context of change point estimation, \citet{mallik} suggests
+such a heuristic.
+They discuss a random variable $x_t$, whose distribution is a function
+of a continuous covariate $t$.
+For $t<d^*$, $\EE (x_t)=\tau_0$, a constant; for $t>\dstar$, $\EE
+(x_t)>\tau_0$.
+They propose an estimate of $d_0$ based on p-values $p_t$
+testing the hypotheses $H_{0t}:\EE (x_t)=\tau_0$.
+They note that for $t<\dstar$, the null hypotheses are true, so
+$p_t\sim U(0,1)$, and $\EE (p_t) =1/2$; when $t>\dstar$, the null hypotheses are false, and
+the p-values converge in probability to zero.
+That fact leads them to the following least-squares estimator for
+$\dstar$:
+\begin{equation*}
+\dhatm\equiv arg\displaystyle\min_{d\in \mathbb{N}} \displaystyle\sum_{t\le d} (p_t -1/2)^2 +
+\displaystyle\sum_{t>d} p_t^2.
+\end{equation*}
+In other words, the estimate $\dhatm$ is the point at which the
+p-values cease behaving as p-values testing a true null, with mean
+$1/2$, and instead are drawn from a distribution with a lower mean.
+It turns out that an equivalent expression for $\dhatm$ is:
+\begin{equation*}
+\dhatm=arg\displaystyle\max_d \displaystyle\sum_{t\le d} (p_t-1/4).
+\end{equation*}
+\citet{mallik} shows that as $n_t$, the number of data points at each value
+$t$, and the number of sampled values of $t$ increase, $\dhatm$
+converges in probability to $\dstar$.
+
+The same broad logic applies to any set of p-values from sequential tests:
+$\dhatm=argmax_d \sum_{t\le d} (p_t-1/4)$ may be considered an
+estimate of $\dstar$.
+In the case of sequential specification tests, for $d\le \dstar$, p-values $p_d$ are draws from
+a $U(0,1)$ distribution, and hence have mean 1/2, and, as $n_d$ or $N$
+increase, $p_d \rightarrow_p 0$ for $d>\dstar$.
+Some differences in the details, though, lead to differences in
+$\dhatm$'s behavior.
+For instance:
+\begin{prop}
+If indeed $p_d\rightarrow_p 0$ for $d>\dstar$, as $n\rightarrow\infty$ then $\dhatm$ is asymptotically conservative:
+$Pr(\dhatm>\dstar)\rightarrow 0$.
+\end{prop}
+\begin{proof}
+For each $d$, $Pr(p_d -1/4>0)\rightarrow 0$, implying that for all $d'$, $Pr(\sum_{\dstar <t\le d'}
+(p_t-1/4)>0)\rightarrow 0$.
+Therefore, for $\dstar<d\le D$, $Pr(\sum_{t\le d} (p_t-1/4)> \sum_{t\le
+  \dstar} (p_t-1/4))\rightarrow 0$.
+\end{proof}
+That is, as sample size increases, the probability that $\dhatm$
+suggests a model that violates assumption $\mathcal{A}$ decreases to
+zero.
+The same property holds for $\dalphaU$, with $\alpha>0$ fixed, for
+the same reason.
+
+On the other hand, even with an infinite sample $\dhatm$ may choose a
+sub-optimal model, $\dhatm<\dstar$.
+As sample size grows, the distribution of $p_d$, $d\le \dstar$ remains
+stable at $U(0,1)$.
+When $p_\dstar-1/4<0$, $\dhatm \neq \dstar$, since $\sum_{d\le
+  \dstar-1} (p_d-1/4)>\sum_{d\le \dstar} (p_d-1/4)$.
+Since $Pr(p_\dstar-1/4<0)=1/4$ regardless of sample size, $\dhatm$
+will be conservative in large samples.
+The difference between the SST case discussed here and the
+change-point case in \citet{mallik} is that the latter case relies on
+a continuous covariate that may be sampled from any point on the unit
+interval, whereas in the SST case the choice set $d=1,2,\dots,D$ is
+discrete and held fixed in the asymptotics.
+
+In a way, $\dhatm$ is similar to $\dhatU_{0.25}$, the largest $d$ for
+which $p_d>\alpha=0.25$, since both penalize p-values lower than
+$0.25$.
+However, they are not equivalent, as the following proposition shows:
+\begin{prop}
+$\dhatm \le \dhatU_{0.25}$, with $Pr(\dhatm < \dhatU_{0.25})>0$.
+\end{prop}
+\begin{proof}
+By definition, $p_d<0.25$ for all $d>\dhatU_{0.25}$. Therefore,
+$\sum_{t=\dhatU_{0.25}+1}^{d'}(p_t-1/4)<0$ for all $d'\ge
+\dhatU_{0.25}+1$, which in turn implies that $\sum_{t\le
+  \dhatU_{0.25}}(p_t-1/4)>\sum_{t\le d'}(p_t-1/4)$, proving that
+$\dhatm\le \dhatU_{0.25}$. On the other hand, if, say,
+$p_{\dhatU_{0.25}-1}+p_{\dhatU_{0.25}}<1/2$, or, more generally,
+$\sum_{t=d'}^{\dhatU_{0.25}}(p_t-1/4)<0$, then $\dhatm<\dhatU_{0.25}$.
+\end{proof}
+
+In general, the difference between $\dalphaU$ and $\dhatm$ will be
+most pronounced when the distributions of p-values for $d>\dstar$ are
+not monotonically decreasing in probability. In such a scenario, it
+is most probable that an errant p-value for $d>>\dstar$ will be
+greater than $\alpha$; one p-value determines $\dalphaU$, but
+$\dhatm$ relies on the entire set of p-values.
+
+\subsection{A More Flexible $\dhatm$}
+In finite samples, p-values from tests of false null hypotheses will
+not always be zero.
+Similarly, many hypothesis tests are asymptotic and may not yield
+uniformly-distributed p-values in finite samples.
+Still, p-values from sequential specification tests may exhibit something similar to the
+dichotomous behavior that motivates $\dhatm$, in which p-values for
+$d\le \dstar$ are distributed differently than p-values for
+$d>\dstar$.
+For this reason, \citet{mallik} suggested a more flexible estimate:
+\begin{equation*}
+  \dhatmab \equiv arg\displaystyle\min_{\dhat\in \mathbb{N}; 0<b<a<1}
+  \displaystyle\sum_{d\le \dhat} ( p_d
+  -a)^2+\displaystyle\sum_{d>\dhat} (p_d-b)^2
+\end{equation*}
+Like $\dhatm$, model selector $\dhatmab$ looks for behavior that
+differs between p-values testing true and false null hypotheses.
+Unlike $\dhatm$, it does not depend on theoretically established
+distributions for these p-values, but searches over a grid for their
+location parameters.
+$\dhatmab$ will be more computationally expensive to compute than
+$\dhatm$, but will may yield better results, especially in small
+samples.
+
+
+
+\section{A Simulation Study}\label{sec:simulation}
+<<simulation>>=
+#source('src/changePointSim.r')
+
+beta=0.1
+
+### not run:
+## st <- simTot(1000,ns=c(10,100),beta=beta)
+load('src/simulation26/simulation.RData')
+
+facet <- facet2
+
+nsim <- length(st[[1]])
+
+mats <- lapply(st,function(x) do.call('rbind',lapply(x,function(xx) xx$full)))
+eqLin <- mean(vapply(mats[1:3], function(x) mean(x[,'\\hat{d}_M']==x[,'\\hat{d}^{flex}_M'],na.rm=TRUE),1))
+eqSin <- mean(vapply(mats[4:6], function(x) mean(x[,'\\hat{d}_M']==x[,'\\hat{d}^{flex}_M'],na.rm=TRUE),1))
+
+@
+This section will present a small simulation study to compare the
+behavior of model selectors $\dalphaU$, $\dalphaB$,
+$\dhatm$, and $\dhatmab$ in finite samples.
+
+In the simulation, a researcher tests a sequence of hypotheses
+\begin{equation}\label{eq:nullSim}
+H_d: \EE (X\mid-d<r<0)=\EE (X\mid0<r<d)
+\end{equation}
+for a covariate $X$ and a sequencing variable $r\in [-30,30]$.
+This might arise if the researcher wants to identify the largest
+possible region around the origin in which $X$ is balanced around 0.
+
+For every run of the simulation, $H_d$ is true for $d\le 10$, and,
+with one exception, false for $d>10$.
+In other words, the optimal choice for $d$ is $\dstar=10$.
+The simulation runs differ via two factors: the first factor is sample
+size, the number of samples available at each value of $r$:
+$n=\{10,50,100\}$.
+The second factor concerns departures from $H_d$ for $d>10$: in simulations with
+linear imbalance, departures from $H_d$ for $r>10$ are linear in $d$, with $\EE
+(X\midr)-\EE(X\mid-r)=2\beta(r-10)$, where $\beta=$\Sexpr{beta}.
+In simulations with sinusoidal imbalance, departures from $H_d$ for
+$r>10$ are sinusoidal: $\EE(X\mid r) = sin\{(r-10)\pi/10\}$ for
+$r>10$, $\EE(X\mid r)= sin\{(r+10)\pi/10\}$ for $r< -10$ and $\EE(X
+\mid r)=0$ otherwise.
+In the latter case, the extent of departures from $H_d$ increases for
+$10<|r|<20$ then decreases for $20<|r|<30$, so that $H_{30}:\EE(X
+\mid-30\le r \le 0)=\EE(X \mid 0\le r \le 30)$ is true.
+
+In each dataset, the researcher tests (\ref{eq:nullSim}) via t-tests
+and records the p-values.
+These p-values, in turn, give rise to eight different choices for
+$\hat{d}$: $\dalphaU$ and $\dalphaB$, with $\alpha=0.5,0.15,0.25$,
+$\dhatm$, and $\dhatmab$.
+
+Figure \ref{fig:linImb} shows the results of \Sexpr{nsim} replications
+under linear imbalance.
+Table \ref{tab:linear} shows some statistics that may not be apparent
+from the figure.
+For all three sample sizes, the model selectors tended to select
+samples that were too large.
+However, as the sample size increased, and with it the power to reject
+$H_b$ for smaller values of $b$, the performance of the selectors
+improved.
+$\dalphaU$ had the smallest
+variance across the board, but at the
+price of often choosing the larger datasets.
+On the other extreme, $\dalphaB$ picked very small datasets; for all
+three sample sizes, $\dhatB_{0.25}\le 3$ in over half of the
+simulation runs.
+
+$\dhatm$ and $\dhatmab$, on average, performed the best across
+runs; their average choices were close to $\dstar=10$ in all three
+runs.
+However, they were more variable than $\dalphaU$, and occasionally
+chose very small $\hat{d}$.
+The flexible estimate $\dhatmab$ was less than or equal to $\dhatm$ in
+every case, though the two estimates coincided about
+\Sexpr{round(eqLin*100)}\% of the time.
+
+
+
+\begin{figure}
+<<linearImbalance,fig.width=6,fig.height=3,cache=TRUE>>=
+
+facet(st,FALSE)
+@
+\caption{Simulation results for simulations featuring linear
+  imbalance. The parameter $n$ controls the sample size at each value
+  of $r$, from -30 to 30. Eight different model selectors are shown
+  for each sample size via overlaid violin and box-plots}
+\label{fig:linImb}
+\end{figure}
+
+
+<<linearTable,results='asis'>>=
+ss <- sumStats(st)
+
+#ss <- lapply(ss, function(x) x[,-grep('mse',colnames(ss))])
+ss <- lapply(ss, function(x) x[,c('avg','sd','lessThan3','moreThan13')])
+
+
+tab <- do.call("cbind",ss[1:3])
+rownames(tab) <- paste0('$',c("\\dhatU_{0.05}","\\dhatU_{0.15}","\\dhatU_{0.25}","\\dhatB_{0.05}","\\dhatB_{0.15}","\\dhatB_{0.25}","\\dhatm","\\dhatmab"),'$')
+
+
+colnames(tab) <- rep(c('avg','sd','$\\le 3$','$>13$'),3)
+
+xtab <- xtable(tab,caption='The average and standard deviation of each selection rule $\\hat{d}$, as well as the proportions of runs each method selected $d\\le 3$ or $d>13$, for $n=10,50,100$ with linear covariate imbalance',label='tab:linear')
+align(xtab) <- "r|cccc|cccc|cccc|"
+digits(xtab) <- c(0,rep(c(1,1,2,2),3))
+    addtorow <- list()
+    addtorow$pos <- list(-1)
+    addtorow$command <- c("& \\multicolumn{4}{c}{$n=10$}&\\multicolumn{4}{c}{$n=50$} &\\multicolumn{4}{c}{$n=100$}\\\\\n")
+    print(xtab,sanitize.text.function=function(x) x,add.to.row=addtorow)
+
+@
+
+When departures from $H_d$ are not monotonic in $d$, as in the
+sinusoidal simulation, differences between model selectors can be
+starker.
+Figure \ref{fig:sinImb} shows the results from that simulation.
+Most striking is that $\dalphaU$ chooses the maximum $d=30$ rather
+frequently.
+This may not actually be a bad thing. Indeed, the mean of the
+covariate $X$ is equal between positive and negative $r$ when $d=30$.
+However, depending on the application, large differences in the mean
+of $X$ for particular values of $r$ may indicate other departures from
+model assumptions.
+Whether the behavior exhibited by $\dalphaU$, which occasionally
+chooses the largest possible $d$, is preferable to that of $\dhatm$,
+which rarely does, will depend on the specific data scenario.
+That said, the results in Figure \ref{fig:sinImb} illustrate the
+difference between a procedure like $\dalphaU$ whose decision may be driven by one
+individual p-value, and one like $\dhatm$ which is driven by the
+entire distribution of p-values.
+
+
+\begin{figure}
+<<sinusoidalImbalance,fig.width=6,fig.height=3,cache=TRUE>>=
+facet(st,TRUE)
+@
+\caption{Simulation results for simulations featuring sinusoidal
+  imbalance. The parameter $n$ controls the sample size at each value
+  of $r$, from -30 to 30. Eight different model selectors are shown
+  for each sample size via overlaid violin and box-plots}
+\label{fig:sinImb}
+\end{figure}
+
+
+
+
+\section{Two Data Examples}\label{sec:examples}
+
+
+\subsection{Sequential specification tests in Regression Discontinuity Bandwidth Selection:
+  Estimating the Effect of  Academic Probation on College GPAs}
+
+At many universities, students who fail to achieve a minimum GPA are
+put on academic probation.
+\citet{lso} recognized that AP can form a regression discontinuity
+design, in which treatment is a function of a ``running
+variable'' with a pre-determined cutoff.
+Specifically the treatment $Z$, students' AP status, is (almost) a
+deterministic function of a ``running variable'' $R$, students'
+grade-point-averages (GPAs).
+Students with a GPA below a pre-determined cutoff, $R<c$, are put on AP.
+That being the case, students with GPAs just below $c$ may be
+comparable to students with GPAs just above $c$, so comparing these two
+sets of students allows researchers to estimate the effect of probation on
+outcomes $Y$.
+The challenge becomes defining ``just above'' and ``just below''; sequential specification tests
+may be able to play a role here.
+
+For example, \citet{cft} suggests directly
+comparing the outcomes of subjects with $R$ very close to $c$, say with
+$R\in [c-bw,c+bw]$ for some bandwidth $bw>0$.
+To choose $bw$, they use pre-treatment covariates $\bm{X}$, and
+covariate balance tests range of candidate bandwidths.
+For each possible $bw$, they test the hypothesis that the covariates
+are balanced:
+\begin{equation}\label{eq:covBal}
+\bm{X}\independent Z\mid R\in[c-bw,c+bw]
+\end{equation}
+and choose the largest bandwidth in which (\ref{eq:covBal}) cannot be
+rejected\footnote{Equation (\ref{eq:covBal}) is a simplification of Assumption 4 in
+  \citet{cft}, which treats $x$ as fixed, not random.}.
+
+Bandwidth selection for regression discontinuity designs, and the role of covariate balance tests,
+encompasses a growing literature.
+As its name suggests, regression discontinuity typically relies on
+regression modeling: the goal is to model $Y$ as a function of $R$ on
+either side of $c$ to estimate the average treatment effect for
+subjects with $R$ in an infinitesimally-small interval around the
+cutoff $c$ \citep[See][]{imbensLemiuxRDD}.
+In contrast, \citet{cft} dispenses with regression altogether.
+One popular way to ensure robustness to model misspecification is to
+fit the regression models to a subset of the data with $R$ in a
+window around $c$.
+A number of methods exist to choose an optimal bandwidth $bw$ that is both large enough to allow for precise effect
+estimation but small enough to ensure robustness.
+\citet{IK} suggest using non-parametric estimates of the curvature of
+the regression function of $Y$ on $R$, combined with local linear
+regression, to choose a $bw$ that minimizes mean-squared-error.
+However, other authors have suggested choosing $bw$ (or an analogous quantity) based on
+sequential specification tests, including \citet{mattai}, which presents a Bayesian approach
+analogous to \citet{cft}, \citet{salesHansen}, which discusses the use of robust
+regression models,  and \citet{angristWanna}, which proposes a method
+to estimate effects for subjects with $R$ farther from $c$.
+In the latter paper, sequential specification tests do not test covariate balance, but the
+irrelevance of $R$ conditional on covariates $X$, for subjects in a
+given bandwidth.
+
+This section will illustrate several approaches to sequential specification tests in the context
+of estimating the effect of AP for first year college students on
+subsequent GPAs.
+For the sake of simplicity, the discussion will be limited to the methods in \citet{cft}; however, many of
+the SST methods can be extended to other regression discontinuity analyses.
+In their analysis, \citet{lso}  considered a set of seven covariates:
+students' high-school GPA (expressed in percentiles), age at college
+matriculation, number of attempted credits, gender, native language
+(English or other), birth place (North America or other) and
+university campus (the university consisted of three campuses).
+A version of Hotellings $T^2$ test that models
+treatment assignment $Z$, and not $X$, as random \citep{hansenBowers}
+is used to test balance.
+The resulting p-values are plotted in the left panel of Figure \ref{fig:rdpvalues1}.
+Various bandwidth selections are plotted as vertical lines in the
+figure, and enumerated in Table \ref{tab:RDD}.
+
+\begin{figure}
+<<rdd,fig.width=6,fig.height=3,results='hide',cache=TRUE>>=
+
+rddDat <- data.frame(bws=rep(c(0,bws),2),ps=c(0,psT,NA,psT1),incCovs=c(rep('All Covariates',length(bws)+1),rep('High School GPA',length(bws)+1)))
+rddDat <- subset(rddDat,bws<=0.3)
+
+dhatDat <- data.frame(value=c(multLine(c(0,bws)[windowsT+1],amount=0.002),
+                          multLine(c(0,bws)[windowsT1+1],amount=0.002)),
+                      Selector=c(names(windowsT),names(windowsT1)),incCovs=c(rep('All Covariates',length(windowsT)),rep('High School GPA',length(windowsT1))))
+
+
+
+ggplot(rddDat,aes(bws,ps))+geom_point(size=2)+
+    geom_vline(data=dhatDat,aes(xintercept=value,color=Selector),show.legend=TRUE)+ scale_colour_manual(values=cbbPalette)+
+        facet_wrap(~incCovs,ncol=2)+labs(x='Bandwidth',y='p-value')
+
+
+
+@
+\caption{P-values from for balance in all seven covariates
+  from the \citet{lso} analysis and only high school GPA, respectively. Vertical lines denote bandwidth choices using
+  different criteria.}
+\label{fig:rdpvalues1}
+\end{figure}
+
+<<rddTab,results='asis'>>=
+tab <- cbind(d=windowsT,bw=c("N/A",bws)[windowsT+1],
+             ATE=paste0(round(ates[1,],2),' (',round(ates[2,],3),')'),
+             d=windowsT1,bw=c("N/A",bws)[windowsT1+1],
+             ATE=paste0(round(ates2[1,],2),' (',round(ates2[2,],3),')'))
+xtab <- xtable(tab,caption="Selected regression discontinuity bandwidths ('d' is the point in the sequence selected, and 'bw' is the bandwidth) using covariate balance tests for all the covariates in \\citet{lso} and only high school GPA, respectively, along with their assosicated estimates for the average treatment effect of academic probation (ATE), with standard errors.",label="tab:RDD")
+align(xtab) <- "r|ccc|ccc|"
+
+addtorow <- list()
+addtorow$pos <- list(-1)
+addtorow$command <- c("& \\multicolumn{3}{c}{All Covariates}&\\multicolumn{3}{c}{HS GPA}\\\\\n")
+print(xtab,sanitize.text.function=function(x) x,add.to.row=addtorow)
+
+@
+
+The p-values from testing balance on all covariates do not follow a
+monotonic pattern: they are near zero for very small bandwidths,
+larger for bandwidths greater than \Sexpr{min(bws[psT>0.05])-0.01}, and close to zero again for
+bandwidths greater than \Sexpr{max(bws[psT>0.05])}.
+Here, as in the sinusoidal simulation in Section \ref{sec:simulation},
+social scientists may disagree about appropriate bandwidth selection.
+On the one hand, covariates appear to be approximately balanced (or,
+at least, there is no evidence to the contrary) for a range of
+bandwidths.
+On the other hand, the apparent covariate imbalance for small
+bandwidths is worrying: perhaps it suggests deeper problems with this
+design.
+
+This ambivalence is reflected in the various bandwidth selectors.
+$\dhatB_{0.05}$ and $\dhatB_{0.15}$ reject every possible bandwidth, while
+both $\dhatm$ and $\dhat_M^{a,b}$ select the lowest possible
+bandwidth of 0.
+According to these methods, the \citet{cft} method is unsuitable for this
+dataset.
+However, the scattered large p-values at some bandwidths lead
+ $\dalphaU$ to select larger bandwidths.
+
+To better illustrate differences between the window selection
+strategies, we consider the covariate high school GPA alone.
+Since the outcome of interest is itself a GPA, prior measures of GPA
+are arguably the most relevant and important to control.
+P-values from tests of balance in high school GPA are
+displayed in the right panel of Figure \ref{fig:rdpvalues1}.
+Fortunately for the illustration here, high school GPA may be
+balanced for small bandwidths.
+These p-values from are more nearly
+monotonic, appearing roughly uniformly distributed for smaller
+bandwidths and close to zero at high bandwidths.
+The behavior of bandwidth selectors $\dhat$, shown with vertical lines
+in the figure and in Table \ref{tab:RDD}, reflects this feature.
+The first p-value below 0.05 occurs at a bandwidth of
+\Sexpr{min(bws[psT1<0.05])}; accordingly, both $\dhatU_{0.05}$ and
+$\dhatB_{0.05}$ select a bandwidth of \Sexpr{bws[windowsT1[1]]}.
+On the other hand, the p-value of \Sexpr{psT1[2]} at \Sexpr{bws[2]}
+caused $\dhatB_{0.15}$ to select the smallest possible bandwidth of 0.
+The change-point selectors, $\dhatm$ and $\dhatmab$, along with
+$\dhatU_{0.15}$, chose a bandwidth of \Sexpr{bws[windowsT1[6]]}.
+In fact, a close inspection of Figure \ref{fig:rdpvalues1} reveals
+that beginning at a bandwidth of 0.1, the p-values seem to be
+decreasing which suggests, perhaps, slight violations of the assumption
+in (\ref{eq:covBal}).
+$\dhatm$ and $\dhatmab$ chose a higher bandwidth than this due, in
+part, to the high p-value at 0.15, which broke the trend, but
+otherwise may have chosen an even smaller bandwidth.
+In contradistinction, selectors such as $\dalphaU$ and $\dalphaB$ that
+are based entirely on individual extreme p-values cannot account for
+such patterns.
+
+Table \ref{tab:RDD} also gives the estimated average treatment effect
+for each bandwidth.
+At very small bandwidths, the estimated effect is larger, though with a
+large standard error as well.
+The choice between bandwidths at the higher end does not make a large
+difference in the estimated effects.
+
+\subsection{Lag Order in autoregressModels: US Total Unemployment}
+
+
+Figure \ref{fig:example}B shows the natural logarithm of the United States total
+unemployment rate from 1890 to 2016.
+The data were combined from the ``Nelson \& Plosser extended data
+set'' provided in the \texttt{urca} library in \texttt{R}
+\citep{urca,Rcite}, which covers years 1890--1988, and a downloadable
+dataset from the United States Bureau of Labor Statistics, itself
+derived from the Current Population Survey, which covers years
+1947--2015 \citep{cps}.
+The two datasets agree on the overlapping years.
+
+Assume that the time series follows an ``AR($d$)'' model; that is,
+\begin{equation}\label{eq:arp}
+unemp_t=\mu + \displaystyle\sum_{i=1}^d \phi_i unemp_{t-i}+\epsilon_t
+\end{equation}
+where $\mu$ and $\{\phi_i\}_{i=1}^d$ are parameters to be estimated
+and $\epsilon_t$ is white noise.
+In this model, the unemployment in one year is a function of
+unemployment rates in the previous $d$ years, but conditionally
+independent of even earlier measurements.
+More generally, we may write (\ref{eq:arp}) as
+\begin{equation*}
+unemp_t=\mu+\displaystyle\sum_{i=1}^\infty \phi_i
+unemp_{t-i}+\epsilon_t
+\end{equation*}
+with $\phi_i=0$ for $i>d$.
+
+Having settled on model (\ref{eq:arp}), the analyst must choose $d$,
+the lag order.
+sequential specification tests can be useful here \citep[e.g.][]{practitionersGuide}.
+Consider the null hypothesis $H_d: \phi_i=0$ for all $i>d$;
+a researcher could test a sequence of such null hypotheses, for a set
+of plausible values of $d$, and choose the $d$ based on the results.
+Of course, there are other options for choosing $d$, including
+substantive theory or optimizing
+information criteria
+\citep{akaike1969fitting,schwarz1978estimating}.
+For instance, choosing the model that minimizes \textsc{aic}, defined as
+$2d -2log(\hat{L}_d)$, where $\hat{L}_d$ is the maximized likelihood
+of the $AR(d)$ model, or \textsc{bic}, which is defined as $log(n)d-2 -2log(\hat{L}_d)$.
+\citealt{potscher1991effects} points out that differences in \textsc{aic} or
+\textsc{bic} are essentially likelihood ratio test statistics.
+In the absence of substantive theory, sequential specification tests can assist a modeler to
+choose the smallest model that is still approximately correct, as
+opposed to the model that maximizes predictive accuracy as measured
+by, say, mean squared error.
+A large literature surrounds this important question \citep[See,
+e.g.][and the citations
+therein]{mcquarrie1998regression,liew2004lag}. This section is not
+meant as a complete treatment, or even an overview, of lag order
+selection, but as an illustration of sequential specification tests in a well-known area.
+
+Figure \ref{fig:tspvalues1} gives the p-values from a sequence
+likelihood ratio tests, as described in \citet[][Ch.1]{urca}, which
+discussed a similar dataset.
+For each candidate lag order $d$, the likelihood ratio test compares
+twice the ratio of the log likelihoods of $AR(d+1)$ and $AR(d)$ models
+to a $\chi^2_1$ distribution.
+If the $AR(d+1)$ model fits much better than the $AR(d)$ model, a lag
+order of $d$ may not be sufficient.
+The p-values follow a stark pattern: for $d<5$, they are close to
+zero, while for $d\ge5$, they appear roughly uniformly distributed.
+
+Table \ref{tab:ts}, and vertical lines in Figure \ref{fig:tspvalues1},
+show the lag order choices from $\dalphaU$, $\dalphaB$, $\dhatm$, and
+$\dhatmab$, which are based on the p-values, and the lag orders that
+minimize \textsc{aic} and \textsc{bic}, based directly on the models' likelihood and numbers
+of parameters.
+Here, smaller models are preferable to larger models, so $\dstar$ is
+the smallest acceptable value for $d$.
+This is the opposite of the regression discontinuity case, which attempted to find the
+largest dataset on which to fit the model.
+
+\Sexpr{stopifnot(length(unique(dhatsTSnm[c('alphaU15','dm','dmab','AIC','BIC')]))==1)}
+\Sexpr{stopifnot(dhatsTSnm['alphaU05']<dhatsTSnm['dm'])}
+\Sexpr{stopifnot(dhatsTSnm['alphaB05']==dhatsTSnm['alphaB15'])}
+\Sexpr{stopifnot(dhatsTSnm['alphaB15']>dhatsTSnm['dm'])}
+
+The change-point selectors $\dhatm$ and $\dhatmab$ both selected a
+lag order of \Sexpr{dhatsTSnm['dm']}, consistent with the casual
+observation that p-values for lags less than this value are very
+small, while those greater appear approximately uniform.
+Incidentally, the two information criteria considered, \textsc{aic} and \textsc{bic},
+agreed with this choice, as did $\dhatU_{0.15}$.
+In contradistinction, $\dhatU_{0.05}$ chose a smaller lag order of
+\Sexpr{dhatsTSnm['alphaU05']}, since the corresponding p-value of
+\Sexpr{round(pvalsTS[dhatsTSnm['alphaU05']],3)} slightly exceeds the threshold of 0.05.
+\Sexpr{stopifnot(pvalsTS[min(dhatsTS)]>0.05)}
+At the other extreme, the $\dalphaB$ selectors both chose very large
+models with $d=$\Sexpr{dhatsTSnm['alphaB05']}, due to the presence of
+of a small p-value of
+\Sexpr{round(pvalsTS[dhatsTSnm['alphaB05']-1],3)} at
+$d=$\Sexpr{dhatsTSnm['alphaB05']-1}.
+
+This example illustrates how considering the entire distribution of
+p-values, as $\dhatm$ does, can lead to better model selection than
+considering only the small (as in $\dalphaB$) or large ($\dalphaU$)
+values.
+
+\begin{figure}
+<<tsResults,fig.width=6,fig.height=3>>=
+
+dhatsTS <- c(dhatAll(pvalsTS,backwards=TRUE),AIC=which.min(aics),BIC=which.min(bics))
+par(mfrow=c(1,1),xpd=FALSE)
+
+dhatDat <- data.frame(value=multLine(dhatsTS,amount=0.05),Selector=names(dhatsTS))
+ggplot( mapping=aes(1:length(pvalsTS),pvalsTS))+geom_point(size=2)+labs(x="$d$",y="p-value")+
+    geom_vline(data=dhatDat,aes(xintercept=value,color=Selector),show.legend=TRUE)
+@
+\caption{P-values from sequential likelihood-ratio tests of model fit,
+  comparing models AR($d$) with AR($p+1$)o in the annual total US
+  unemployment rate (logged) time series.}
+\label{fig:tspvalues1}
+\end{figure}
+
+
+<<tsTab,results='asis'>>=
+orders <- as.data.frame(as.integer(dhatsTS))
+names(orders) <- 'Lag Order'
+rownames(orders) <- names(dhatsTS)
+print(xtable(orders,caption='Lag order selections for an $AR(d)$ model of the US unemployment time series.',
+             label='tab:ts'),sanitize.text.function=function(x) x)
+@
+
+\section{Discussion}\label{sec:discussion}
+The simple intuition behind the use of sequential specification tests is that there exists a set
+of candidate models that are approximately correct, and another set
+that are false.
+By examining the results of specification tests, the thinking goes, a
+researcher may pick the best model from the former category.
+However, the negative logic of specification tests makes them poorly
+suited to finding the boundary between the two groups.
+Further, they require the choice of test level
+$\alpha$, and there is little guidance as to how to choose it.
+Finally, common procedures for choosing a model based on a sequence of
+hypothesis tests are driven entirely by individual extreme test
+results, and may, therefore, be unstable.
+
+This paper argues that a clever idea from the change point literature
+can solve all of these problems.
+\citet{mallik} suggests that the full distribution of p-values from
+sequential specification tests may be used to construct an estimator of the optimal true model
+in the sequence.
+The estimator they suggest does not require researchers to specify
+$\alpha$ and is not typically driven by individual extreme p-values.
+Just as \citet{hodgeslehmann} showed how to estimate a parameter from
+a sequence of p-values from hypothesis tests, \citet{mallik} shows how
+to select an optimal model from a sequence of p-values from
+specification tests.
+
+This paper examined the performance of the selector from
+\citet{mallik} and other SST-based selectors via simulation and
+example, and showed that, in certain ways, it tends to perform better,
+if only marginally so.
+In the simulation studies, its average value was consistently closer
+to the correct value than the other methods.
+It successfully compromised between the two dominant strategies,
+denoted here as $\dalphaU$ and $\dalphaB$, typically avoiding the
+over-aggressiveness of $\dalphaU$ while also avoiding the
+occasionally extreme conservativeness of $\dalphaB$.
+Its advantage came from its ability to overlook intermittent anomalous
+p-values that distract $\dalphaU$ or $\dalphaB$ from an overall
+pattern.
+
+There are several open questions regarding $\dhatm$'s behavior and
+use.
+First, it is unclear whether or when the more flexible version
+$\dhatmab$ should be preferred to $\dhatm$; there is good reason to
+expect it to perform better when sample sizes are small, but is there
+a cost associated with using $\dhatmab$ in larger samples?
+
+Further, there may be ways to construct sequential specification tests in a way that improves
+$\dhatm$'s performance.
+For instance, tests that focus on the difference between two
+successive models, as opposed to each model's overall quality, may, in
+some circumstances, have higher power to detect departures from
+assumptions.
+Such tests would yield p-values with less statistical dependence,
+which would provide another advantage to $\dhatm$.
+How to construct such tests, and under what circumstances, if any,
+they improve model selection, is a topic for future research.
+
+Researchers who want to use hypothesis tests to choose from a sequence
+of models may feel uneasy about the statistical validity of their
+procedure or their choice of $\alpha$.
+This paper will hopefully show how to choose a model using a sequence
+of p-values in a way that is coherent and does not require arbitrary
+cutoffs or tuning parameters.
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{sst}
+\end{document}

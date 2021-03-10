@@ -51,7 +51,7 @@ dhatAll <- function(ps, alphas=c(0.05,0.25),backwards=FALSE){
           dhatM(ps),
           dhatM2(ps)[2]),
         c(paste0('$\\bar{d}_{',alphas,'}$'),
-          paste0('$\\underline{d}_{',alphas,'}$'),
+          paste0('$\\tilde{d}_{',alphas,'}$'),
           '$\\dhatm$','$\\dhatmab$')
         )
     if(backwards) res <- vapply(res,function(x) length(ps)-x+1,1)
