@@ -1,3 +1,4 @@
+
 library(vioplot)
 library(parallel)
 cl<-makePSOCKcluster(min(10,detectCores()))
@@ -243,3 +244,4 @@ simTable <- function(st,curv){
     addtorow$pos <- list(-1)
     addtorow$command <- c("& \\multicolumn{4}{c}{$n=10$}&\\multicolumn{4}{c}{$n=50$} &\\multicolumn{4}{c}{$n=100$}\\\\\n")
     print(xtab,sanitize.text.function=function(x) x,add.to.row=addtorow)
+}

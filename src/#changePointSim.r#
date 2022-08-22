@@ -35,13 +35,13 @@ test <- function(x,bw,edge=TRUE){
 alphaTest <- function(ps,alpha=c(0.05,0.15,0.25)){
     bstars <- NULL
     for(a in alpha)
-        bstars <- c(bstars,seq(2,20)[max(which(ps>a))])
+        bstars <- c(bstars,seq(1,length(ps))[max(which(ps>a))])
     names(bstars) <- alpha
     bstars
 }
 
 mallik <- function(ps){
-    seq(2,20)[which.max(cumsum(ps-1/4))]
+    seq(2,length(ps))[which.max(cumsum(ps-1/4))]
 }
 
 ks <- function(ps){
