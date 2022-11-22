@@ -1,6 +1,9 @@
 Replication materials for "Sequential Specification Tests to Choose a Model: A
 Change-Point Approach"
 
+https://arxiv.org/abs/1708.00907
+
+
 To replicate:
 
 1. Download Academic Probation data from https://www.aeaweb.org/aej/app/data/2008-0202_data.zip, unzip, and save as 'data/AEJApp2008-0202_data/data_for_analysis.dta'
