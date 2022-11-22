@@ -1,6 +1,8 @@
 Replication materials for "Sequential Specification Tests to Choose a Model: A
 Change-Point Approach"
 
+Forthcoming in _Communications in Statistics--Theory and Methods_
+
 https://arxiv.org/abs/1708.00907
 
 
