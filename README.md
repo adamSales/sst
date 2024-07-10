@@ -1,3 +1,5 @@
+# Sequential Specification Tests to Choose a Model: A Change-Point Approach
+
 Replication materials for "Sequential Specification Tests to Choose a Model: A
 Change-Point Approach"
 
